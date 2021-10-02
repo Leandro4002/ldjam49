@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace ldjam49Namespace {
     public class Ghost {
-        public float speed = 20, radius = 20;
+        public float speed = 20, radius = 19;
         public Ldjam49.Direction direction, target;
         public Body body;
         public int blockingTileX, blockingTileY;
@@ -25,10 +25,11 @@ namespace ldjam49Namespace {
             body.BodyType = BodyType.Dynamic;
             body.GravityScale = 0;
             body.FixedRotation = true;
+            body.Restitution = 0.6f;
             changeDirectionDelay = new Delay(5f);
             random = new Random();
 
-            target = (Ldjam49.Direction)random.Next(0, 3);
+            //target = (Ldjam49.Direction)random.Next(0, 3);
 
             body.CollidesWith = Category.Cat1;
             body.CollisionCategories = Category.Cat3;
@@ -44,19 +45,11 @@ namespace ldjam49Namespace {
             if (Ldjam49.isPhysicsActivated) return;
             bool canChangePosition = true;
 
-            if (ghostTexture.Name.Contains("red")) {
-                target = direction;
-                if (Ldjam49.kState.IsKeyDown(Keys.Left) || Ldjam49.kState.IsKeyDown(Keys.A)) target = Ldjam49.Direction.Left;
-                if (Ldjam49.kState.IsKeyDown(Keys.Right) || Ldjam49.kState.IsKeyDown(Keys.D)) target = Ldjam49.Direction.Right;
-                if (Ldjam49.kState.IsKeyDown(Keys.Up) || Ldjam49.kState.IsKeyDown(Keys.W)) target = Ldjam49.Direction.Up;
-                if (Ldjam49.kState.IsKeyDown(Keys.Down) || Ldjam49.kState.IsKeyDown(Keys.S)) target = Ldjam49.Direction.Down;
-            } else {
-                changeDirectionDelay.Update(dt);
+            changeDirectionDelay.Update(dt);
 
-                if (changeDirectionDelay.isTrigger) {
-                    target = (Ldjam49.Direction)random.Next(0, 3);
-                    changeDirectionDelay.Reset();
-                }
+            if (changeDirectionDelay.isTrigger) {
+                target = (Ldjam49.Direction)random.Next(0, 3);
+                changeDirectionDelay.Reset();
             }
 
             blockingTileX = -1; blockingTileY = -1;
@@ -67,29 +60,29 @@ namespace ldjam49Namespace {
                     if (Ldjam49.tiles[y][x] == 0) continue;
                     float xPos = Ldjam49.TILE_SIZE * x;
                     float yPos = Ldjam49.TILE_SIZE * y;
-                    float someVal = 1.1f;
+                    float roomOfManeuver = 0.2f;
                     switch (target) {
-                        case Ldjam49.Direction.Down:
-                            if (yPos > body.Position.Y + radius && yPos < body.Position.Y + radius + 1.5f * Ldjam49.TILE_SIZE && Math.Abs(xPos - body.Position.X) < Ldjam49.TILE_SIZE / someVal) {
-                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
+                        case Ldjam49.Direction.Up:
+                            if (yPos < body.Position.Y && yPos >= body.Position.Y - Ldjam49.TILE_SIZE && Math.Abs(xPos - body.Position.X) <= Ldjam49.TILE_SIZE / 2f + Ldjam49.TILE_SIZE / (2f + roomOfManeuver)) {
+                                blockingTileY = (int)yPos; blockingTileX = (int)xPos;
                                 canChangePosition = false;
                             }
                             break;
-                        case Ldjam49.Direction.Up:
-                            if (yPos < body.Position.Y - radius && yPos > body.Position.Y - radius - 1.5f * Ldjam49.TILE_SIZE && Math.Abs(xPos - body.Position.X) < Ldjam49.TILE_SIZE / someVal) {
-                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
+                        case Ldjam49.Direction.Down:
+                            if (yPos > body.Position.Y && yPos <= body.Position.Y + Ldjam49.TILE_SIZE && Math.Abs(xPos - body.Position.X) <= Ldjam49.TILE_SIZE / 2f + Ldjam49.TILE_SIZE / (2f + roomOfManeuver)) {
+                                blockingTileY = (int)yPos; blockingTileX = (int)xPos;
                                 canChangePosition = false;
                             }
                             break;
                         case Ldjam49.Direction.Left:
-                            if (xPos < body.Position.X - radius && xPos > body.Position.X - radius - 1.5f * Ldjam49.TILE_SIZE && Math.Abs(yPos - body.Position.Y) < Ldjam49.TILE_SIZE / someVal) {
-                                blockingTileY = (int)yPos; blockingTileX = (int)xPos;
+                            if (xPos < body.Position.X && xPos >= body.Position.X - Ldjam49.TILE_SIZE && Math.Abs(yPos - body.Position.Y) <= Ldjam49.TILE_SIZE / 2f + Ldjam49.TILE_SIZE / (2f + roomOfManeuver)) {
+                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
                                 canChangePosition = false;
                             }
                             break;
                         case Ldjam49.Direction.Right:
-                            if (xPos > body.Position.X + radius && xPos < body.Position.X + radius + 1.5f * Ldjam49.TILE_SIZE && Math.Abs(yPos - body.Position.Y) < Ldjam49.TILE_SIZE / someVal) {
-                                blockingTileY = (int)yPos; blockingTileX = (int)xPos;
+                            if (xPos > body.Position.X && xPos <= body.Position.X + Ldjam49.TILE_SIZE && Math.Abs(yPos - body.Position.Y) <= Ldjam49.TILE_SIZE / 2f + Ldjam49.TILE_SIZE / (2f + roomOfManeuver)) {
+                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
                                 canChangePosition = false;
                             }
                             break;
@@ -124,9 +117,8 @@ namespace ldjam49Namespace {
             }
 
             body.Position += GhostMovement * dt;
-            body.Awake = true;
 
-            float offset = 15;
+            float offset = 17f;
             bool isGhostBlocked = false;
             for (int y = 0; y < Ldjam49.tiles.Length; ++y) {
                 for (int x = 0; x < Ldjam49.tiles[y].Length; ++x) {

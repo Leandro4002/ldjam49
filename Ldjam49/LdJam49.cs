@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Utilities;
 using Genbox.VelcroPhysics.Factories;
+using Genbox.VelcroPhysics.Collision.Filtering;
 using MonoGameUtilities;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,20 +16,22 @@ namespace ldjam49Namespace {
     public class Ldjam49 : Game {
         public readonly GraphicsDeviceManager graphicsDevice;
         public static SpriteBatch spriteBatch;
-        public static RenderTarget2D gameRender;
+        public static RenderTarget2D gameRender, lightRender;
         public static bool showFps, IsExiting, isPhysicsActivated;
         public static float roomOfManeuver = 0.3f; // The bigger the more time the player has to change direction before it is not possible again
+        public static float ballRadius = 5.5f;
         public const int TILE_SIZE = 50;
         public static float ambientOpacity = 0.5f, ambientOpacityVariation = 0.02f;
         public static Random random;
         public static readonly Vector2 HALF_TILE = new Vector2(TILE_SIZE / 2, TILE_SIZE / 2);
         public static int[][] tiles;
         public static Body[][] tilesBody;
-        public static Texture2D DebugTileTexture, PlayerTexture;
+        public static Texture2D DebugTileTexture, PlayerTexture, borderTexture, ballTexture;
         public static World world;
         public static Dictionary<string, Texture2D> textures;
         public static KeyboardState kState, oldKState;
-        public static Matrix transformMatrix;
+        public static Matrix centerImageMatrix, halfTileMatrix;
+        public static Vector2 centerDisplacement;
         public static Ghost[] ghosts;
         public static BlendState multiplyBlendState;
         public static Delay thunderDelay, thunderDuration;
@@ -59,9 +62,14 @@ namespace ldjam49Namespace {
             sounds = LoadAudioInPath("Content/audio");
 
             Sound sound = CoreSystem.LoadStreamedSound("rain.mp3");
-            sound.Volume = 0.3f;
+            sound.Volume = 0.1f;
             Channel channel = sound.Play();
             channel.Looping = true;
+
+            Sound sound2 = CoreSystem.LoadStreamedSound("Monkeys-Spinning-Monkeys.mp3");
+            sound2.Volume = 0.1f;
+            Channel channel2 = sound2.Play();
+            channel2.Looping = true;
 
             random = new Random();
 
@@ -71,10 +79,10 @@ namespace ldjam49Namespace {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             tiles = new int[][] {
-                new int[] {1, 6, 27, 3, 0, 19, 0, 19, 0, 4, 28, 6, 2},
-                new int[] {4, 8, 3, 0, 0, 0, 0, 0, 0, 0, 4, 8, 3},
+                new int[] {24, 24, 27, 3, 0, 19, 0, 19, 0, 4, 28, 24, 24},
+                new int[] {8, 8, 3, 0, 0, 0, 0, 0, 0, 0, 4, 8, 8},
                 new int[] {0, 0, 0, 0, 16, 9, 9, 9, 18, 0, 0, 0, 0},
-                new int[] {16, 9, 21, 0, 0, 0, 0, 0, 0, 0, 20, 9, 9},
+                new int[] {9, 9, 21, 0, 0, 0, 0, 0, 0, 0, 20, 9, 9},
                 new int[] {0, 0, 12, 18, 0, 16, 9, 18, 0, 16, 13, 0, 0},
                 new int[] {2, 0, 10, 0, 0, 0, 0, 0, 0, 0, 10, 0, 1},
                 new int[] {3, 0, 19, 0, 1, 6, 6, 6, 2, 0, 19, 0, 4},
@@ -85,7 +93,9 @@ namespace ldjam49Namespace {
                 new int[] {26, 6, 6, 2, 0, 10, 0, 10, 0, 1, 6, 6, 25}
             };
 
-            transformMatrix = Matrix.CreateTranslation(new Vector3(630, 250, 0)) * Matrix.CreateScale(.8f);
+            centerDisplacement = new Vector2(630, 240);
+            centerImageMatrix = Matrix.CreateTranslation(new Vector3(centerDisplacement.X, centerDisplacement.Y, 0)) * Matrix.CreateScale(.8f);
+            halfTileMatrix = Matrix.CreateTranslation(new Vector3(HALF_TILE.X, HALF_TILE.Y, 0));
 
             multiplyBlendState = new BlendState() {
                 ColorBlendFunction = BlendFunction.Add,
@@ -107,8 +117,14 @@ namespace ldjam49Namespace {
                         tilesBody[y][x] = BodyFactory.CreateRectangle(world, 40f, 40f, 1f);
                         tilesBody[y][x].BodyType = BodyType.Static;
                         tilesBody[y][x].Position = new Vector2(TILE_SIZE * x, TILE_SIZE * y);
+                        tilesBody[y][x].CollisionCategories = Category.Cat1;
+                        tilesBody[y][x].FixedRotation = true;
                     } else {
-                        tilesBody[y][x] = null; //Maybe useless
+                        tilesBody[y][x] = BodyFactory.CreateCircle(world, ballRadius, 1);
+                        tilesBody[y][x].BodyType = BodyType.Static;
+                        tilesBody[y][x].Position = new Vector2(TILE_SIZE * x, TILE_SIZE * y);
+                        tilesBody[y][x].CollisionCategories = Category.Cat4;
+                        tilesBody[y][x].Restitution = 0.7f;
                     }
                 }
             }
@@ -121,17 +137,20 @@ namespace ldjam49Namespace {
         protected override void LoadContent() {
             base.LoadContent();
 
-            DebugTileTexture = Tools.CreateRectTexture(GraphicsDevice, 50, 50, Color.Lime);
-
             textures = Content.LoadPath<Texture2D>("Content/textures");
 
             ghosts = new Ghost[] {
-                new Ghost(Ghost.EnemyType.red, 3, 1) { speed = 25 },
-                new Ghost(Ghost.EnemyType.blue, 9, 1),
-                new Ghost(Ghost.EnemyType.pink, 1, 10) { speed = 15 },
-                new Ghost(Ghost.EnemyType.orange, 11, 10) };
+                new Ghost(Ghost.EnemyType.red, 3, 1) { speed = 25, direction = Direction.Right },
+                new Ghost(Ghost.EnemyType.blue, 9, 1) { direction = Direction.Left },
+                new Ghost(Ghost.EnemyType.pink, 1, 10) { speed = 15, direction = Direction.Right },
+                new Ghost(Ghost.EnemyType.orange, 11, 10) { direction = Direction.Left }, };
 
-            gameRender = new RenderTarget2D(GraphicsDevice, 1600, 900);
+            gameRender = new RenderTarget2D(GraphicsDevice, tiles[0].Length * TILE_SIZE, tiles.Length * TILE_SIZE);
+            lightRender = new RenderTarget2D(GraphicsDevice, tiles[0].Length * TILE_SIZE, tiles.Length * TILE_SIZE);
+
+            DebugTileTexture = Tools.CreateRectTexture(GraphicsDevice, 50, 50, Color.Lime);
+            ballTexture = Tools.CreateCircleTexture(GraphicsDevice, (int)ballRadius, Color.Yellow, 2);
+            borderTexture = Tools.CreateRectTexture(GraphicsDevice, tiles[0].Length * TILE_SIZE, tiles.Length * TILE_SIZE, Color.Black, 5);
         }
 
         protected override void UnloadContent() {
@@ -148,23 +167,19 @@ namespace ldjam49Namespace {
                 thunderDelay.timer = (float)random.NextDouble() * (thunderMaxWaitTime - thunderMinWaitTime) + thunderMinWaitTime;
                 thunderDelay.Reset();
                 thunderDuration.Reset();
-                sounds["thunder" + random.Next(1, 3)].Play();
+                string audioFile = "thunder" + random.Next(1, 3);
+                sounds[audioFile].Volume = 0.5f;
+                sounds[audioFile].Play();
+                ActivatePhysics();
                 Debug.WriteLine("THUNDER");
             }
 
-            ambientOpacity = MathHelper.Clamp(ambientOpacity + (float)(random.NextDouble() - 0.5) * ambientOpacityVariation * (!thunderDuration.isTrigger ? thunderPerturbation : 0), 0, 1);
+            ambientOpacity = MathHelper.Clamp(ambientOpacity + (float)(random.NextDouble() - 0.5) * ambientOpacityVariation * (!thunderDuration.isTrigger ? thunderPerturbation : 1), 0, 1);
 
             kState = Keyboard.GetState();
 
             if (Ldjam49.kState.IsKeyDown(Keys.P)) {
-                isPhysicsActivated = true;
-                Player.body.GravityScale = 1;
-                Player.body.FixedRotation = false;
-
-                for (int i = 0; i < ghosts.Length; ++i) {
-                    ghosts[i].body.GravityScale = 1;
-                    ghosts[i].body.FixedRotation = false;
-                }
+                ActivatePhysics();
             }
 
             Player.Update(dt);
@@ -180,44 +195,95 @@ namespace ldjam49Namespace {
 
             base.Update(gameTime);
         }
+
+        void ActivatePhysics() {
+            Vector2 force;
+            isPhysicsActivated = true;
+            Player.body.GravityScale = 1;
+            Player.body.FixedRotation = false;
+            Player.body.Awake = true;
+            Player.body.CollidesWith = Category.All;
+            force = GetRandomVector(500);
+            force.Y = -Math.Abs(force.Y);
+            Player.body.ApplyLinearImpulse(force);
+
+            for (int i = 0; i < ghosts.Length; ++i) {
+                ghosts[i].body.GravityScale = 1;
+                ghosts[i].body.FixedRotation = false;
+                ghosts[i].body.Awake = true;
+                ghosts[i].body.CollidesWith = Category.All;
+                force = GetRandomVector(500);
+                force.Y = -Math.Abs(force.Y);
+                ghosts[i].body.ApplyLinearImpulse(force);
+            }
+
+            for (int y = 0; y < tilesBody.Length; ++y) {
+                for (int x = 0; x < tilesBody[y].Length; ++x) {
+                    if (tilesBody[y][x].FixedRotation == true) continue;
+                    tilesBody[y][x].BodyType = BodyType.Dynamic;
+                    tilesBody[y][x].CollidesWith = Category.All;
+                    force = GetRandomVector(500);
+                    force.Y = -Math.Abs(force.Y);
+                    tilesBody[y][x].ApplyLinearImpulse(force);
+                }
+            }
+        }
         
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.SetRenderTarget(gameRender);
             spriteBatch.Begin();
             spriteBatch.Draw(textures["background"], Vector2.Zero, Color.White);
             spriteBatch.End();
-            spriteBatch.Begin(transformMatrix: transformMatrix);
+            spriteBatch.Begin(transformMatrix: halfTileMatrix);
+            for (int y = 0; y < tilesBody.Length; ++y) {
+                for (int x = 0; x < tilesBody[y].Length; ++x) {
+                    if (tilesBody[y][x].FixedRotation == false) {
+                        spriteBatch.Draw(ballTexture, tilesBody[y][x].Position, null, Color.White, 0, new Vector2(ballRadius), 1f, SpriteEffects.None, 0f);
+                    } else {
+                        spriteBatch.Draw(textures["tile_" + tiles[y][x]], new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
+                    }
+                }
+            }
             Player.Draw();
             foreach (Ghost ghost in ghosts) {
                 ghost.Draw();
             }
-            for (int y = 0; y < tiles.Length; ++y) {
-                for (int x = 0; x < tiles[y].Length; ++x) {
-                    if (tiles[y][x] == 0) continue;
-                    spriteBatch.Draw(textures["tile_" + tiles[y][x]], new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
-                    //spriteBatch.Draw(DebugTileTexture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White * .5f, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
-                }
-            }
+            spriteBatch.Draw(borderTexture, - new Vector2(TILE_SIZE / 2), Color.White);
             spriteBatch.End();
-
             GraphicsDevice.SetRenderTarget(null);
 
             GraphicsDevice.Clear(Color.TransparentBlack);
+
+            //Light
+            /*GraphicsDevice.SetRenderTarget(lightRender);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Draw(textures["pacman_light"], Player.body.Position + HALF_TILE, null, Color.White, 0, new Vector2(textures["pacman_light"].Width) / 2, 1f, SpriteEffects.None, 0f);
+            foreach (Ghost ghost in ghosts) {
+                string thing = ghost.ghostTexture.Name.Substring((int)(ghost.ghostTexture.Name.IndexOf("/")) + 1);
+                spriteBatch.Draw(textures[thing + "_light"], ghost.body.Position + HALF_TILE, null, Color.White, 0, new Vector2(textures[thing + "_light"].Width) / 2, 1f, SpriteEffects.None, 0f);
+            }
+            spriteBatch.End();
+            GraphicsDevice.SetRenderTarget(null);*/
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             spriteBatch.Draw(textures["mask"], Vector2.Zero, Color.White);
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, transformMatrix: transformMatrix);
-            spriteBatch.Draw(textures["pacman_light"], Player.body.Position, null, Color.White, 0, new Vector2(textures["pacman_light"].Width)/2, 1f, SpriteEffects.None, 0f);
-
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, transformMatrix: centerImageMatrix);
+            spriteBatch.Draw(textures["pacman_light"], Player.body.Position + HALF_TILE, null, Color.White, 0, new Vector2(textures["pacman_light"].Width) / 2, 1f, SpriteEffects.None, 0f);
             foreach (Ghost ghost in ghosts) {
                 string thing = ghost.ghostTexture.Name.Substring((int)(ghost.ghostTexture.Name.IndexOf("/")) + 1);
-                spriteBatch.Draw(textures[thing + "_light"], ghost.body.Position, null, Color.White, 0, new Vector2(textures[thing + "_light"].Width) / 2, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(textures[thing + "_light"], ghost.body.Position + HALF_TILE, null, Color.White, 0, new Vector2(textures[thing + "_light"].Width) / 2, 1f, SpriteEffects.None, 0f);
+            }
+            for (int y = 0; y < tilesBody.Length; ++y) {
+                for (int x = 0; x < tilesBody[y].Length; ++x) {
+                    if (tilesBody[y][x].FixedRotation == true) continue;
+                    spriteBatch.Draw(textures["ball_light"], tilesBody[y][x].Position + HALF_TILE, null, Color.White, 0, new Vector2(textures["ball_light"].Width) / 2, 1f, SpriteEffects.None, 0f);
+                }
             }
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, multiplyBlendState, SamplerState.PointClamp/*, transformMatrix: transformMatrix*/);
+            spriteBatch.Begin(SpriteSortMode.Deferred, multiplyBlendState, transformMatrix: centerImageMatrix);
             spriteBatch.Draw(gameRender, Vector2.Zero, Color.White);
             spriteBatch.End();
 
@@ -241,6 +307,10 @@ namespace ldjam49Namespace {
 
             return content;
 
+        }
+
+        Vector2 GetRandomVector(float force) {
+            return new Vector2((float)(random.NextDouble() * 2 - 1), (float)(random.NextDouble() * 2 - 1)) * force;
         }
 
         protected override void Dispose(bool disposing) {
