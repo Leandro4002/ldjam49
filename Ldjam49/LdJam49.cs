@@ -12,22 +12,19 @@ using System.Diagnostics;
 namespace ldjam49Namespace {
     public class Ldjam49 : Game {
         public readonly GraphicsDeviceManager graphicsDevice;
-        public SpriteBatch spriteBatch;
-        public bool showFps, IsExiting;
-        public float roomOfManeuver = 0.3f; // The bigger the more time the player has to change direction before it is not possible again
-        public Body playerBody;
+        public static SpriteBatch spriteBatch;
+        public static bool showFps, IsExiting, isPhysicsActivated;
+        public static float roomOfManeuver = 0.3f; // The bigger the more time the player has to change direction before it is not possible again
         public const int TILE_SIZE = 50;
-        public readonly Vector2 HALF_TILE = new Vector2(TILE_SIZE / 2, TILE_SIZE / 2);
-        public int[][] tiles;
-        public Body[][] tilesBody;
-        public float playerSpeed, playerRadius = 15;
-        public Texture2D DebugTileTexture, PlayerTexture;
-        public World World;
-        public Dictionary<string, Texture2D> textures;
-        public Direction playerDirection, targetDirection;
-        public KeyboardState kState, oldKState;
-        public Matrix transformMatrix;
-        public int blockingTileX, blockingTileY;
+        public static readonly Vector2 HALF_TILE = new Vector2(TILE_SIZE / 2, TILE_SIZE / 2);
+        public static int[][] tiles;
+        public static Body[][] tilesBody;
+        public static Texture2D DebugTileTexture, PlayerTexture;
+        public static World world;
+        public static Dictionary<string, Texture2D> textures;
+        public static KeyboardState kState, oldKState;
+        public static Matrix transformMatrix;
+        public static Ghost[] ghosts;
 
         public enum Direction {
             Right, Down, Left, Up
@@ -39,6 +36,7 @@ namespace ldjam49Namespace {
             ConvertUnits.SetDisplayUnitToSimUnitRatio(1);
             IsFixedTimeStep = true;
             Content.RootDirectory = "Content";
+            IsMouseVisible = true;
         }
 
         protected override void Initialize() {
@@ -51,36 +49,34 @@ namespace ldjam49Namespace {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             tiles = new int[][] {
-                new int[] {1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1},
-                new int[] {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
-                new int[] {0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-                new int[] {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
-                new int[] {0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0},
-                new int[] {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
-                new int[] {1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1},
-                new int[] {0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-                new int[] {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
-                new int[] {1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1},
-                new int[] {1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
-                new int[] {1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1}
+                new int[] {1, 6, 27, 3, 0, 19, 0, 19, 0, 4, 28, 6, 2},
+                new int[] {4, 8, 3, 0, 0, 0, 0, 0, 0, 0, 4, 8, 3},
+                new int[] {0, 0, 0, 0, 16, 9, 9, 9, 18, 0, 0, 0, 0},
+                new int[] {16, 9, 21, 0, 0, 0, 0, 0, 0, 0, 20, 9, 9},
+                new int[] {0, 0, 12, 18, 0, 16, 9, 18, 0, 16, 13, 0, 0},
+                new int[] {2, 0, 10, 0, 0, 0, 0, 0, 0, 0, 10, 0, 1},
+                new int[] {3, 0, 19, 0, 1, 6, 6, 6, 2, 0, 19, 0, 4},
+                new int[] {0, 0, 0, 0, 4, 8, 8, 8, 3, 0, 0, 0, 0},
+                new int[] {2, 0, 17, 0, 0, 0, 0, 0, 0, 0, 17, 0, 1},
+                new int[] {7, 0, 19, 0, 16, 21, 0, 20, 18, 0, 19, 0, 5},
+                new int[] {7, 0, 0, 0, 0, 10, 0, 10, 0, 0, 0, 0, 5},
+                new int[] {26, 6, 6, 6, 0, 10, 0, 10, 0, 1, 6, 6, 25}
             };
 
             transformMatrix = Matrix.CreateTranslation(new Vector3(0, 0, 0)) * Matrix.CreateScale(1);
 
-            playerDirection = Direction.Right;
-            playerSpeed = 50;
             showFps = true;
 
-            World = new World(Vector2.Zero);
-            World.Gravity = new Vector2(0, 50);
+            world = new World(Vector2.Zero);
+            world.Gravity = new Vector2(0, 50);
 
             tilesBody = new Body[tiles.Length][];
 
             for (int y = 0; y < tiles.Length; ++y) {
                 tilesBody[y] = new Body[tiles[y].Length];
                 for (int x = 0; x < tiles[y].Length; ++x) {
-                    if (tiles[y][x] == 1) {
-                        tilesBody[y][x] = BodyFactory.CreateRectangle(World, 40f, 40f, 1f);
+                    if (tiles[y][x] != 0) {
+                        tilesBody[y][x] = BodyFactory.CreateRectangle(world, 40f, 40f, 1f);
                         tilesBody[y][x].BodyType = BodyType.Static;
                         tilesBody[y][x].Position = new Vector2(TILE_SIZE * x, TILE_SIZE * y);
                     } else {
@@ -89,11 +85,7 @@ namespace ldjam49Namespace {
                 }
             }
 
-            playerBody = BodyFactory.CreateCircle(World, playerRadius, 1f);
-            playerBody.Position = new Vector2(TILE_SIZE * 6, TILE_SIZE * 5);
-            playerBody.BodyType = BodyType.Dynamic;
-            playerBody.GravityScale = 0;
-            playerBody.FixedRotation = true;
+            Player.Init();
 
             base.Initialize();
         }
@@ -104,6 +96,12 @@ namespace ldjam49Namespace {
             DebugTileTexture = Tools.CreateRectTexture(GraphicsDevice, 50, 50, Color.Lime);
 
             textures = Content.LoadPath<Texture2D>("Content/textures");
+
+            ghosts = new Ghost[] {
+                new Ghost(Ghost.EnemyType.red) { speed = 25 },
+                new Ghost(Ghost.EnemyType.blue),
+                new Ghost(Ghost.EnemyType.pink) { speed = 15 },
+                new Ghost(Ghost.EnemyType.orange) };
         }
 
         protected override void UnloadContent() {
@@ -115,125 +113,16 @@ namespace ldjam49Namespace {
 
             kState = Keyboard.GetState();
 
-            targetDirection = playerDirection;
-            if (kState.IsKeyDown(Keys.Left) || kState.IsKeyDown(Keys.A)) targetDirection = Direction.Left;
-            if (kState.IsKeyDown(Keys.Right) || kState.IsKeyDown(Keys.D)) targetDirection = Direction.Right;
-            if (kState.IsKeyDown(Keys.Up) || kState.IsKeyDown(Keys.W)) targetDirection = Direction.Up;
-            if (kState.IsKeyDown(Keys.Down) || kState.IsKeyDown(Keys.S)) targetDirection = Direction.Down;
-            bool canChangePosition = true;
+            Player.Update(dt);
 
-            blockingTileX = -1; blockingTileY = -1;
-            for (int y = 0; y < tiles.Length; ++y) {
-                if (!canChangePosition) break;
-                for (int x = 0; x < tiles[y].Length; ++x) {
-                    if (!canChangePosition) break;
-                    if (tiles[y][x] != 1) continue;
-                    float xPos = TILE_SIZE * x;
-                    float yPos = TILE_SIZE * y;
-                    float someVal = 1.1f;
-                    switch (targetDirection) {
-                        case Direction.Down:
-                            if (yPos > playerBody.Position.Y + playerRadius && yPos < playerBody.Position.Y + playerRadius + 1.5f * TILE_SIZE && Math.Abs(xPos - playerBody.Position.X) < TILE_SIZE / someVal) {
-                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
-                                canChangePosition = false;
-                            }
-                            break;
-                        case Direction.Up:
-                            if (yPos < playerBody.Position.Y - playerRadius && yPos > playerBody.Position.Y - playerRadius - 1.5f * TILE_SIZE && Math.Abs(xPos - playerBody.Position.X) < TILE_SIZE / someVal) {
-                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
-                                canChangePosition = false;
-                            }
-                            break;
-                        case Direction.Left:
-                            if (xPos < playerBody.Position.X && xPos >= playerBody.Position.X - TILE_SIZE && Math.Abs(yPos - playerBody.Position.Y) <= TILE_SIZE / 2f + TILE_SIZE / (2f + roomOfManeuver)) {
-                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
-                                canChangePosition = false;
-                            }
-                            break;
-                        case Direction.Right:
-                            if (xPos > playerBody.Position.X && xPos <= playerBody.Position.X + TILE_SIZE && Math.Abs(yPos - playerBody.Position.Y) <= TILE_SIZE / 2f + TILE_SIZE / (2f + roomOfManeuver)) {
-                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
-                                canChangePosition = false;
-                            }
-                            break;
-                    }
-                }
-            }
-            
-            if (canChangePosition && targetDirection != playerDirection) {
-                if ((targetDirection == Direction.Up || targetDirection == Direction.Down) && (playerDirection == Direction.Left || playerDirection == Direction.Right)) {
-                    playerBody.Position = new Vector2((int)(playerBody.Position.X / TILE_SIZE + 1) * TILE_SIZE, playerBody.Position.Y);
-
-                    if ((playerDirection == Direction.Left && targetDirection == Direction.Down) || (playerDirection == Direction.Left && targetDirection == Direction.Up)) {
-                        playerBody.Position = new Vector2(playerBody.Position.X - TILE_SIZE, playerBody.Position.Y);
-                    }
-                }
-                if ((targetDirection == Direction.Left || targetDirection == Direction.Right) && (playerDirection == Direction.Up || playerDirection == Direction.Down)) {
-                    playerBody.Position = new Vector2(playerBody.Position.X, (int)(playerBody.Position.Y / TILE_SIZE + 1) * TILE_SIZE);
-
-                    if ((playerDirection == Direction.Up && targetDirection == Direction.Right) || (playerDirection == Direction.Up && targetDirection == Direction.Left)) {
-                        playerBody.Position = new Vector2(playerBody.Position.X, playerBody.Position.Y - TILE_SIZE);
-                    }
-                }
-                playerDirection = targetDirection;
-                playerBody.Rotation = (float)((int)playerDirection * Math.PI / 2);
-                Debug.WriteLine("DIRECTION CHANGED");
+            foreach (Ghost ghost in ghosts) {
+                ghost.Update(dt);
             }
 
             oldKState = kState;
 
-            Vector2 playerMovement = Vector2.Zero;
-            switch (playerDirection) {
-                case Direction.Down: playerMovement.Y = playerSpeed; break;
-                case Direction.Up: playerMovement.Y = -playerSpeed; break;
-                case Direction.Left: playerMovement.X = -playerSpeed; break;
-                case Direction.Right: playerMovement.X = playerSpeed; break;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Space)) { playerBody.Position += playerMovement * dt; playerBody.Awake = true; }
-
-            float offset = 18;
-            bool isPlayerBlocked = false;
-            for (int y = 0; y < tiles.Length; ++y) {
-                for (int x = 0; x < tiles[y].Length; ++x) {
-                    if (tiles[y][x] != 1) continue;
-                    float xPos = TILE_SIZE * x;
-                    float yPos = TILE_SIZE * y;
-                    switch (playerDirection) {
-                        case Direction.Down:
-                            if (Tools.Rect2Rect(playerBody.Position.X - playerRadius/2, playerBody.Position.Y - playerRadius / 2 + offset, playerRadius, playerRadius, xPos - TILE_SIZE / 2, yPos - TILE_SIZE / 2, TILE_SIZE, TILE_SIZE)) {
-                                isPlayerBlocked = true;
-                            }
-                            break;
-                        case Direction.Up:
-                            if (Tools.Rect2Rect(playerBody.Position.X - playerRadius / 2, playerBody.Position.Y - playerRadius / 2 - offset, playerRadius, playerRadius, xPos - TILE_SIZE / 2, yPos - TILE_SIZE / 2, TILE_SIZE, TILE_SIZE)) {
-                                isPlayerBlocked = true;
-                            }
-                            break;
-                        case Direction.Left:
-                            if (Tools.Rect2Rect(playerBody.Position.X - playerRadius / 2 - offset, playerBody.Position.Y - playerRadius / 2, playerRadius, playerRadius, xPos - TILE_SIZE / 2, yPos - TILE_SIZE / 2, TILE_SIZE, TILE_SIZE)) {
-                                isPlayerBlocked = true;
-                            }
-                            break;
-                        case Direction.Right:
-                            if (Tools.Rect2Rect(playerBody.Position.X - playerRadius / 2 + offset, playerBody.Position.Y - playerRadius / 2, playerRadius, playerRadius, xPos - TILE_SIZE / 2, yPos - TILE_SIZE / 2, TILE_SIZE, TILE_SIZE)) {
-                                isPlayerBlocked = true;
-                            }
-                            break;
-                    }
-                }
-            }
-            if (isPlayerBlocked) {
-                playerBody.Position -= playerMovement * dt;
-            }
-
-            if (kState.IsKeyDown(Keys.P)) {
-                playerBody.GravityScale = 1;
-                playerBody.FixedRotation = false;
-            }
-
             // variable time step but never less then 30 Hz
-            World.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, 1f / 30f));
+            world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, 1f / 30f));
 
             base.Update(gameTime);
         }
@@ -243,18 +132,19 @@ namespace ldjam49Namespace {
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: transformMatrix);
 
-            for (int y = 0; y < tilesBody.Length; ++y) {
-                for (int x = 0; x < tilesBody[y].Length; ++x) {
-                    if (tilesBody[y][x] == null) continue;
-                    spriteBatch.Draw(textures["tile"], new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
-                }
-            }
-            if (blockingTileX != -1 && blockingTileY != -1) {
-                //spriteBatch.Draw(DebugTileTexture, new Vector2(blockingTileX, blockingTileY) - HALF_TILE, null, Color.White *.5f, playerBody.Rotation, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            Player.Draw();
+            foreach (Ghost ghost in ghosts) {
+                ghost.Draw();
             }
 
-            spriteBatch.Draw(textures["pacman"], playerBody.Position, null, Color.White, playerBody.Rotation, new Vector2(playerRadius), 1f, SpriteEffects.None, 0f);
-            
+            for (int y = 0; y < tiles.Length; ++y) {
+                for (int x = 0; x < tiles[y].Length; ++x) {
+                    if (tiles[y][x] == 0) continue;
+                    spriteBatch.Draw(textures["tile_" + tiles[y][x]], new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(DebugTileTexture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White * .5f, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
+                }
+            }
+
             spriteBatch.End();
             
             base.Draw(gameTime);
