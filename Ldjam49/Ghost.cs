@@ -15,23 +15,23 @@ namespace ldjam49Namespace {
         public float speed = 20, radius = 20;
         public Ldjam49.Direction direction, target;
         public Body body;
-        public static int blockingTileX, blockingTileY;
+        public int blockingTileX, blockingTileY;
         public Texture2D ghostTexture;
         public Delay changeDirectionDelay;
         public Random random;
-        public Ghost (EnemyType enemyType, int xTile = 0, int yTile = 0) {
+        public Ghost (EnemyType enemyType, int xTile, int yTile) {
             body = BodyFactory.CreateCircle(Ldjam49.world, radius, 1f);
-            body.Position = new Vector2(Ldjam49.TILE_SIZE * 6, Ldjam49.TILE_SIZE * 5);
+            body.Position = new Vector2(Ldjam49.TILE_SIZE * xTile, Ldjam49.TILE_SIZE * yTile);
             body.BodyType = BodyType.Dynamic;
             body.GravityScale = 0;
             body.FixedRotation = true;
-            changeDirectionDelay = new Delay(100);
+            changeDirectionDelay = new Delay(5f);
             random = new Random();
 
-            direction = (Ldjam49.Direction)random.Next(0, 3);
+            target = (Ldjam49.Direction)random.Next(0, 3);
 
-            body.CollidesWith = Genbox.VelcroPhysics.Collision.Filtering.Category.Cat2;
-            body.CollisionCategories = Genbox.VelcroPhysics.Collision.Filtering.Category.Cat2;
+            body.CollidesWith = Category.Cat1;
+            body.CollisionCategories = Category.Cat3;
 
             ghostTexture = Ldjam49.textures["ghost_" + enemyType.ToString()];
         }
@@ -41,6 +41,8 @@ namespace ldjam49Namespace {
         }
 
         public void Update(float dt) {
+            if (Ldjam49.isPhysicsActivated) return;
+
             changeDirectionDelay.Update(dt);
 
             if (changeDirectionDelay.isTrigger) {
@@ -55,7 +57,7 @@ namespace ldjam49Namespace {
                 if (!canChangePosition) break;
                 for (int x = 0; x < Ldjam49.tiles[y].Length; ++x) {
                     if (!canChangePosition) break;
-                    if (Ldjam49.tiles[y][x] != 1) continue;
+                    if (Ldjam49.tiles[y][x] == 0) continue;
                     float xPos = Ldjam49.TILE_SIZE * x;
                     float yPos = Ldjam49.TILE_SIZE * y;
                     float someVal = 1.1f;
@@ -104,8 +106,6 @@ namespace ldjam49Namespace {
                     }
                 }
                 direction = target;
-                body.Rotation = (float)((int)direction * Math.PI / 2);
-                Debug.WriteLine("DIRECTION CHANGED");
             }
 
             Vector2 GhostMovement = Vector2.Zero;
@@ -119,11 +119,11 @@ namespace ldjam49Namespace {
             body.Position += GhostMovement * dt;
             body.Awake = true;
 
-            float offset = 18;
+            float offset = 12;
             bool isGhostBlocked = false;
             for (int y = 0; y < Ldjam49.tiles.Length; ++y) {
                 for (int x = 0; x < Ldjam49.tiles[y].Length; ++x) {
-                    if (Ldjam49.tiles[y][x] != 1) continue;
+                    if (Ldjam49.tiles[y][x] == 0) continue;
                     float xPos = Ldjam49.TILE_SIZE * x;
                     float yPos = Ldjam49.TILE_SIZE * y;
                     switch (direction) {
@@ -152,11 +152,7 @@ namespace ldjam49Namespace {
             }
             if (isGhostBlocked) {
                 body.Position -= GhostMovement * dt;
-            }
-
-            if (Ldjam49.kState.IsKeyDown(Keys.P)) {
-                body.GravityScale = 1;
-                body.FixedRotation = false;
+                changeDirectionDelay.handler = 0;
             }
         }
 

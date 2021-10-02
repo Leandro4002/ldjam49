@@ -24,22 +24,15 @@ namespace ldjam49Namespace {
             body.GravityScale = 0;
             body.FixedRotation = true;
 
-            body.CollisionCategories = Category.Cat1;
+            body.CollisionCategories = Category.Cat2;
             body.CollidesWith = Category.Cat1;
         }
 
         public static void Update(float dt) {
-
             if (Ldjam49.isPhysicsActivated) {
 
             } else {
                 UpdateMovementForPacmanLike(dt);
-            }
-
-            if (Ldjam49.kState.IsKeyDown(Keys.P)) {
-                Ldjam49.isPhysicsActivated = true;
-                body.GravityScale = 1;
-                body.FixedRotation = false;
             }
         }
 
@@ -60,28 +53,29 @@ namespace ldjam49Namespace {
                     float xPos = Ldjam49.TILE_SIZE * x;
                     float yPos = Ldjam49.TILE_SIZE * y;
                     float someVal = 1.1f;
+                    float roomOfManeuver = 0.3f;
                     switch (target) {
-                        case Ldjam49.Direction.Down:
-                            if (yPos > body.Position.Y + radius && yPos < body.Position.Y + radius + 1.5f * Ldjam49.TILE_SIZE && Math.Abs(xPos - body.Position.X) < Ldjam49.TILE_SIZE / someVal) {
-                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
+                        case Ldjam49.Direction.Up:
+                            if (yPos < body.Position.Y && yPos >= body.Position.Y - Ldjam49.TILE_SIZE && Math.Abs(xPos - body.Position.X) <= Ldjam49.TILE_SIZE / 2f + Ldjam49.TILE_SIZE / (2f + roomOfManeuver)) {
+                                blockingTileY = (int)yPos; blockingTileX = (int)xPos;
                                 canChangePosition = false;
                             }
                             break;
-                        case Ldjam49.Direction.Up:
-                            if (yPos < body.Position.Y - radius && yPos > body.Position.Y - radius - 1.5f * Ldjam49.TILE_SIZE && Math.Abs(xPos - body.Position.X) < Ldjam49.TILE_SIZE / someVal) {
-                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
+                        case Ldjam49.Direction.Down:
+                            if (yPos > body.Position.Y && yPos <= body.Position.Y + Ldjam49.TILE_SIZE && Math.Abs(xPos - body.Position.X) <= Ldjam49.TILE_SIZE / 2f + Ldjam49.TILE_SIZE / (2f + roomOfManeuver)) {
+                                blockingTileY = (int)yPos; blockingTileX = (int)xPos;
                                 canChangePosition = false;
                             }
                             break;
                         case Ldjam49.Direction.Left:
-                            if (xPos < body.Position.X - radius && xPos > body.Position.X - radius - 1.5f * Ldjam49.TILE_SIZE && Math.Abs(yPos - body.Position.Y) < Ldjam49.TILE_SIZE / someVal) {
-                                blockingTileY = (int)yPos; blockingTileX = (int)xPos;
+                            if (xPos < body.Position.X && xPos >= body.Position.X - Ldjam49.TILE_SIZE && Math.Abs(yPos - body.Position.Y) <= Ldjam49.TILE_SIZE / 2f + Ldjam49.TILE_SIZE / (2f + roomOfManeuver)) {
+                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
                                 canChangePosition = false;
                             }
                             break;
                         case Ldjam49.Direction.Right:
-                            if (xPos > body.Position.X + radius && xPos < body.Position.X + radius + 1.5f * Ldjam49.TILE_SIZE && Math.Abs(yPos - body.Position.Y) < Ldjam49.TILE_SIZE / someVal) {
-                                blockingTileY = (int)yPos; blockingTileX = (int)xPos;
+                            if (xPos > body.Position.X && xPos <= body.Position.X + Ldjam49.TILE_SIZE && Math.Abs(yPos - body.Position.Y) <= Ldjam49.TILE_SIZE / 2f + Ldjam49.TILE_SIZE / (2f + roomOfManeuver)) {
+                                blockingTileX = (int)xPos; blockingTileY = (int)yPos;
                                 canChangePosition = false;
                             }
                             break;
@@ -124,7 +118,7 @@ namespace ldjam49Namespace {
             bool isPlayerBlocked = false;
             for (int y = 0; y < Ldjam49.tiles.Length; ++y) {
                 for (int x = 0; x < Ldjam49.tiles[y].Length; ++x) {
-                    if (Ldjam49.tiles[y][x] != 1) continue;
+                    if (Ldjam49.tiles[y][x] == 0) continue;
                     float xPos = Ldjam49.TILE_SIZE * x;
                     float yPos = Ldjam49.TILE_SIZE * y;
                     switch (direction) {
@@ -151,6 +145,7 @@ namespace ldjam49Namespace {
                     }
                 }
             }
+
             if (isPlayerBlocked) {
                 body.Position -= playerMovement * dt;
             }

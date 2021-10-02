@@ -98,10 +98,10 @@ namespace ldjam49Namespace {
             textures = Content.LoadPath<Texture2D>("Content/textures");
 
             ghosts = new Ghost[] {
-                new Ghost(Ghost.EnemyType.red) { speed = 25 },
-                new Ghost(Ghost.EnemyType.blue),
-                new Ghost(Ghost.EnemyType.pink) { speed = 15 },
-                new Ghost(Ghost.EnemyType.orange) };
+                new Ghost(Ghost.EnemyType.red, 3, 1) { speed = 25 },
+                new Ghost(Ghost.EnemyType.blue, 9, 1),
+                new Ghost(Ghost.EnemyType.pink, 1, 10) { speed = 15 },
+                new Ghost(Ghost.EnemyType.orange, 11, 10) };
         }
 
         protected override void UnloadContent() {
@@ -112,6 +112,17 @@ namespace ldjam49Namespace {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             kState = Keyboard.GetState();
+
+            if (Ldjam49.kState.IsKeyDown(Keys.P)) {
+                isPhysicsActivated = true;
+                Player.body.GravityScale = 1;
+                Player.body.FixedRotation = false;
+
+                for (int i = 0; i < ghosts.Length; ++i) {
+                    ghosts[i].body.GravityScale = 1;
+                    ghosts[i].body.FixedRotation = false;
+                }
+            }
 
             Player.Update(dt);
 
@@ -141,7 +152,7 @@ namespace ldjam49Namespace {
                 for (int x = 0; x < tiles[y].Length; ++x) {
                     if (tiles[y][x] == 0) continue;
                     spriteBatch.Draw(textures["tile_" + tiles[y][x]], new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
-                    spriteBatch.Draw(DebugTileTexture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White * .5f, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
+                    //spriteBatch.Draw(DebugTileTexture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White * .5f, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
                 }
             }
 
