@@ -1,0 +1,357 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.Samples.Testbed\\VelcroPhysics.MonoGame.Samples.Testbed.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.DebugView\\VelcroPhysics.MonoGame.DebugView.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.DebugView\\VelcroPhysics.MonoGame.DebugView.csproj",
+        "projectName": "Genbox.VelcroPhysics.MonoGame.DebugView",
+        "projectPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.DebugView\\VelcroPhysics.MonoGame.DebugView.csproj",
+        "packagesPath": "C:\\Users\\Leandro\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.DebugView\\obj\\LinuxDebug\\VelcroPhysics.MonoGame.DebugView\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Leandro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {
+              "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics\\VelcroPhysics.MonoGame.csproj": {
+                "projectPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics\\VelcroPhysics.MonoGame.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "noWarn": [
+            "NU5105"
+          ],
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "ConfigureAwaitChecker.Analyzer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "ErrorProne.NET.CoreAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "ErrorProne.NET.Structs": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "IDisposableAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.4.13, )"
+            },
+            "Microsoft.CodeAnalysis.NetAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.3, )"
+            },
+            "Microsoft.SourceLink.GitHub": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "MinVer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "Roslynator.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.2.0, )"
+            },
+            "ToStringWithoutOverrideAnalyzer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.6.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.Samples.Testbed\\VelcroPhysics.MonoGame.Samples.Testbed.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.Samples.Testbed\\VelcroPhysics.MonoGame.Samples.Testbed.csproj",
+        "projectName": "Genbox.VelcroPhysics.MonoGame.Samples.Testbed",
+        "projectPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.Samples.Testbed\\VelcroPhysics.MonoGame.Samples.Testbed.csproj",
+        "packagesPath": "C:\\Users\\Leandro\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.Samples.Testbed\\obj\\LinuxDebug\\VelcroPhysics.MonoGame.Samples.Testbed\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Leandro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.DebugView\\VelcroPhysics.MonoGame.DebugView.csproj": {
+                "projectPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.DebugView\\VelcroPhysics.MonoGame.DebugView.csproj"
+              },
+              "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics\\VelcroPhysics.MonoGame.csproj": {
+                "projectPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics\\VelcroPhysics.MonoGame.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "noWarn": [
+            "NU5105"
+          ],
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "ConfigureAwaitChecker.Analyzer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "ErrorProne.NET.CoreAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "ErrorProne.NET.Structs": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "IDisposableAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.4.13, )"
+            },
+            "Microsoft.CodeAnalysis.NetAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.3, )"
+            },
+            "Microsoft.SourceLink.GitHub": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "MinVer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "MonoGame.Content.Builder.Task": {
+              "target": "Package",
+              "version": "[3.8.0.1641, )"
+            },
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.0.1641, )"
+            },
+            "Roslynator.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.2.0, )"
+            },
+            "ToStringWithoutOverrideAnalyzer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.6.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics\\VelcroPhysics.MonoGame.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics\\VelcroPhysics.MonoGame.csproj",
+        "projectName": "Genbox.VelcroPhysics.MonoGame",
+        "projectPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics\\VelcroPhysics.MonoGame.csproj",
+        "packagesPath": "C:\\Users\\Leandro\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics\\obj\\LinuxDebug\\VelcroPhysics.MonoGame\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Leandro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "noWarn": [
+            "NU5105"
+          ],
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "ConfigureAwaitChecker.Analyzer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "ErrorProne.NET.CoreAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "ErrorProne.NET.Structs": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.0-beta.1, )"
+            },
+            "IDisposableAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.4.13, )"
+            },
+            "Microsoft.CodeAnalysis.NetAnalyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.3, )"
+            },
+            "Microsoft.SourceLink.GitHub": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "MinVer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.0.1641, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "Roslynator.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.2.0, )"
+            },
+            "ToStringWithoutOverrideAnalyzer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.6.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\obj\LinuxDebug\VelcroPhysics.MonoGame\netstandard2.0\VelcroPhysics.MonoGame.csproj.AssemblyReference.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\obj\LinuxDebug\VelcroPhysics.MonoGame\netstandard2.0\VelcroPhysics.MonoGame.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\obj\LinuxDebug\VelcroPhysics.MonoGame\netstandard2.0\VelcroPhysics.MonoGame.AssemblyInfoInputs.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\obj\LinuxDebug\VelcroPhysics.MonoGame\netstandard2.0\VelcroPhysics.MonoGame.AssemblyInfo.cs
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\obj\LinuxDebug\VelcroPhysics.MonoGame\netstandard2.0\VelcroPhysics.MonoGame.csproj.CoreCompileInputs.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\obj\LinuxDebug\VelcroPhysics.MonoGame\netstandard2.0\VelcroPhysics.MonoGame.sourcelink.json
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\bin\LinuxDebug\netstandard2.0\Genbox.VelcroPhysics.MonoGame.deps.json
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\bin\LinuxDebug\netstandard2.0\Genbox.VelcroPhysics.MonoGame.dll
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\bin\LinuxDebug\netstandard2.0\Genbox.VelcroPhysics.MonoGame.pdb
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\obj\LinuxDebug\VelcroPhysics.MonoGame\netstandard2.0\Genbox.VelcroPhysics.MonoGame.dll
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics\obj\LinuxDebug\VelcroPhysics.MonoGame\netstandard2.0\Genbox.VelcroPhysics.MonoGame.pdb

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoSFX/Click.wav</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Fonts/DetailsFont.spritefont</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Fonts/MenuFont.spritefont</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Materials/Square.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Materials/Stripe.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Pipeline/Body.svg</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Pipeline/BreakableBody.svg</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Common/Buttons.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Common/Checkmark.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Common/Cursor.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/Common/SamplesLogo.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Car.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Club.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Cookie.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/cookie_orig.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Diamond.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Goo.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Heart.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Link.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Spade.png</File>
+    <File>C:/Users/Leandro/Desktop/ldjam49/VelcroPhysics.MonoGame.Samples.Demo/Content/DemoGFX/Wheel.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>

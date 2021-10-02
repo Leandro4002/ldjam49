@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "dgSpecHash": "UEiqAd5xHFvbn8dPYgX5P5r9Kzqp32aeUG88IUPKZcVBbjud6L0ewC42UR9cLj1uR2TXIPRKmTqseRtU2+vhuA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\VelcroPhysics.MonoGame.ContentPipelines.TextureToVertices\\VelcroPhysics.MonoGame.Content.TextureToVertices.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Leandro\\.nuget\\packages\\assimpnet\\4.1.0\\assimpnet.4.1.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\configureawaitchecker.analyzer\\5.0.0\\configureawaitchecker.analyzer.5.0.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\errorprone.net.coreanalyzers\\0.4.0-beta.1\\errorprone.net.coreanalyzers.0.4.0-beta.1.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\errorprone.net.structs\\0.4.0-beta.1\\errorprone.net.structs.0.4.0-beta.1.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\idisposableanalyzers\\3.4.13\\idisposableanalyzers.3.4.13.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\microsoft.build.tasks.git\\1.0.0\\microsoft.build.tasks.git.1.0.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\microsoft.codeanalysis.netanalyzers\\5.0.3\\microsoft.codeanalysis.netanalyzers.5.0.3.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\microsoft.sourcelink.common\\1.0.0\\microsoft.sourcelink.common.1.0.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\microsoft.sourcelink.github\\1.0.0\\microsoft.sourcelink.github.1.0.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\microsoft.win32.registry\\4.5.0\\microsoft.win32.registry.4.5.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\minver\\2.5.0\\minver.2.5.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\monogame.framework.content.pipeline\\3.8.0.1641\\monogame.framework.content.pipeline.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\roslynator.analyzers\\3.2.0\\roslynator.analyzers.3.2.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\system.buffers\\4.4.0\\system.buffers.4.4.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\system.memory\\4.5.0\\system.memory.4.5.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.5.0\\system.runtime.compilerservices.unsafe.4.5.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\system.security.accesscontrol\\4.5.0\\system.security.accesscontrol.4.5.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\system.security.principal.windows\\4.5.0\\system.security.principal.windows.4.5.0.nupkg.sha512",
+    "C:\\Users\\Leandro\\.nuget\\packages\\tostringwithoutoverrideanalyzer\\0.6.0\\tostringwithoutoverrideanalyzer.0.6.0.nupkg.sha512"
+  ],
+  "logs": []
+}

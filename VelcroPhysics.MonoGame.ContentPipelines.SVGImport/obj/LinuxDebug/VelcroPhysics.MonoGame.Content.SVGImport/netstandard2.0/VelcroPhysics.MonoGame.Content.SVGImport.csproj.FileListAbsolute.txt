@@ -1,0 +1,12 @@
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\VelcroPhysics.MonoGame.Content.SVGImport.csproj.AssemblyReference.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\VelcroPhysics.MonoGame.Content.SVGImport.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\VelcroPhysics.MonoGame.Content.SVGImport.AssemblyInfoInputs.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\VelcroPhysics.MonoGame.Content.SVGImport.AssemblyInfo.cs
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\VelcroPhysics.MonoGame.Content.SVGImport.csproj.CoreCompileInputs.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\VelcroPhysics.MonoGame.Content.SVGImport.sourcelink.json
+C:\Users\Leandro\Desktop\ldjam49\bin\netstandard2.0\Genbox.VelcroPhysics.MonoGame.Content.SVGImport.deps.json
+C:\Users\Leandro\Desktop\ldjam49\bin\netstandard2.0\Genbox.VelcroPhysics.MonoGame.Content.SVGImport.dll
+C:\Users\Leandro\Desktop\ldjam49\bin\netstandard2.0\Genbox.VelcroPhysics.MonoGame.Content.SVGImport.pdb
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\VelcroPhysics.MonoGame.Content.SVGImport.csproj.CopyComplete
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\Genbox.VelcroPhysics.MonoGame.Content.SVGImport.dll
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.ContentPipelines.SVGImport\obj\LinuxDebug\VelcroPhysics.MonoGame.Content.SVGImport\netstandard2.0\Genbox.VelcroPhysics.MonoGame.Content.SVGImport.pdb

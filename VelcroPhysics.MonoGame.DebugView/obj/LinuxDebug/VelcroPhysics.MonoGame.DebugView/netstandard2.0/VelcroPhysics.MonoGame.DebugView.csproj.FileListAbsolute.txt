@@ -1,0 +1,15 @@
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\bin\LinuxDebug\netstandard2.0\Content\Font.xnb
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\bin\LinuxDebug\netstandard2.0\Genbox.VelcroPhysics.MonoGame.DebugView.deps.json
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\bin\LinuxDebug\netstandard2.0\Genbox.VelcroPhysics.MonoGame.DebugView.dll
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\bin\LinuxDebug\netstandard2.0\Genbox.VelcroPhysics.MonoGame.DebugView.pdb
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\bin\LinuxDebug\netstandard2.0\Genbox.VelcroPhysics.MonoGame.dll
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\bin\LinuxDebug\netstandard2.0\Genbox.VelcroPhysics.MonoGame.pdb
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\VelcroPhysics.MonoGame.DebugView.csproj.AssemblyReference.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\VelcroPhysics.MonoGame.DebugView.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\VelcroPhysics.MonoGame.DebugView.AssemblyInfoInputs.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\VelcroPhysics.MonoGame.DebugView.AssemblyInfo.cs
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\VelcroPhysics.MonoGame.DebugView.csproj.CoreCompileInputs.cache
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\VelcroPhysics.MonoGame.DebugView.sourcelink.json
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\VelcroPhysics.MonoGame.DebugView.csproj.CopyComplete
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\Genbox.VelcroPhysics.MonoGame.DebugView.dll
+C:\Users\Leandro\Desktop\ldjam49\VelcroPhysics.MonoGame.DebugView\obj\LinuxDebug\VelcroPhysics.MonoGame.DebugView\netstandard2.0\Genbox.VelcroPhysics.MonoGame.DebugView.pdb

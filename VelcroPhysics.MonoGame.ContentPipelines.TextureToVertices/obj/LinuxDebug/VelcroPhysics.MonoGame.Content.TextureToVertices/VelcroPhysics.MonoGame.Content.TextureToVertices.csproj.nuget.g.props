@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
+    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
+    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\Leandro\.nuget\packages\;C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages</NuGetPackageFolders>
+    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">5.10.0</NuGetToolVersion>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <SourceRoot Include="C:\Users\Leandro\.nuget\packages\" />
+    <SourceRoot Include="C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\CppNet.dll" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\CppNet.dll')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>CppNet.dll</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.D3DCompiler.dll" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.D3DCompiler.dll')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>SharpDX.D3DCompiler.dll</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.D3DCompiler.xml" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.D3DCompiler.xml')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>SharpDX.D3DCompiler.xml</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.dll" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.dll')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>SharpDX.dll</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.xml" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\SharpDX.xml')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>SharpDX.xml</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\libmojoshader_64.dll" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\libmojoshader_64.dll')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>libmojoshader_64.dll</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.deps.json" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.deps.json')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>mgfxc.deps.json</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.dll" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.dll')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>mgfxc.dll</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.exe" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.exe')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>mgfxc.exe</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.pdb" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.pdb')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>mgfxc.pdb</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.runtimeconfig.dev.json" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.runtimeconfig.dev.json')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>mgfxc.runtimeconfig.dev.json</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.runtimeconfig.json" Condition="Exists('$(NuGetPackageRoot)monogame.framework.content.pipeline\3.8.0.1641\contentFiles\any\netstandard2.0\mgfxc.runtimeconfig.json')">
+      <NuGetPackageId>MonoGame.Framework.Content.Pipeline</NuGetPackageId>
+      <NuGetPackageVersion>3.8.0.1641</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Pack>false</Pack>
+      <Private>False</Private>
+      <Link>mgfxc.runtimeconfig.json</Link>
+    </Content>
+  </ItemGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)microsoft.sourcelink.common\1.0.0\build\Microsoft.SourceLink.Common.props" Condition="Exists('$(NuGetPackageRoot)microsoft.sourcelink.common\1.0.0\build\Microsoft.SourceLink.Common.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.build.tasks.git\1.0.0\build\Microsoft.Build.Tasks.Git.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.tasks.git\1.0.0\build\Microsoft.Build.Tasks.Git.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.sourcelink.github\1.0.0\build\Microsoft.SourceLink.GitHub.props" Condition="Exists('$(NuGetPackageRoot)microsoft.sourcelink.github\1.0.0\build\Microsoft.SourceLink.GitHub.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.codeanalysis.netanalyzers\5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('$(NuGetPackageRoot)microsoft.codeanalysis.netanalyzers\5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
+  </ImportGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgToStringWithoutOverrideAnalyzer Condition=" '$(PkgToStringWithoutOverrideAnalyzer)' == '' ">C:\Users\Leandro\.nuget\packages\tostringwithoutoverrideanalyzer\0.6.0</PkgToStringWithoutOverrideAnalyzer>
+    <PkgRoslynator_Analyzers Condition=" '$(PkgRoslynator_Analyzers)' == '' ">C:\Users\Leandro\.nuget\packages\roslynator.analyzers\3.2.0</PkgRoslynator_Analyzers>
+    <PkgMicrosoft_SourceLink_Common Condition=" '$(PkgMicrosoft_SourceLink_Common)' == '' ">C:\Users\Leandro\.nuget\packages\microsoft.sourcelink.common\1.0.0</PkgMicrosoft_SourceLink_Common>
+    <PkgMicrosoft_Build_Tasks_Git Condition=" '$(PkgMicrosoft_Build_Tasks_Git)' == '' ">C:\Users\Leandro\.nuget\packages\microsoft.build.tasks.git\1.0.0</PkgMicrosoft_Build_Tasks_Git>
+    <PkgMicrosoft_SourceLink_GitHub Condition=" '$(PkgMicrosoft_SourceLink_GitHub)' == '' ">C:\Users\Leandro\.nuget\packages\microsoft.sourcelink.github\1.0.0</PkgMicrosoft_SourceLink_GitHub>
+    <PkgMicrosoft_CodeAnalysis_NetAnalyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_NetAnalyzers)' == '' ">C:\Users\Leandro\.nuget\packages\microsoft.codeanalysis.netanalyzers\5.0.3</PkgMicrosoft_CodeAnalysis_NetAnalyzers>
+    <PkgIDisposableAnalyzers Condition=" '$(PkgIDisposableAnalyzers)' == '' ">C:\Users\Leandro\.nuget\packages\idisposableanalyzers\3.4.13</PkgIDisposableAnalyzers>
+    <PkgErrorProne_NET_Structs Condition=" '$(PkgErrorProne_NET_Structs)' == '' ">C:\Users\Leandro\.nuget\packages\errorprone.net.structs\0.4.0-beta.1</PkgErrorProne_NET_Structs>
+    <PkgErrorProne_NET_CoreAnalyzers Condition=" '$(PkgErrorProne_NET_CoreAnalyzers)' == '' ">C:\Users\Leandro\.nuget\packages\errorprone.net.coreanalyzers\0.4.0-beta.1</PkgErrorProne_NET_CoreAnalyzers>
+    <PkgConfigureAwaitChecker_Analyzer Condition=" '$(PkgConfigureAwaitChecker_Analyzer)' == '' ">C:\Users\Leandro\.nuget\packages\configureawaitchecker.analyzer\5.0.0</PkgConfigureAwaitChecker_Analyzer>
+  </PropertyGroup>
+</Project>
