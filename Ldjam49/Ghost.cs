@@ -42,15 +42,22 @@ namespace ldjam49Namespace {
 
         public void Update(float dt) {
             if (Ldjam49.isPhysicsActivated) return;
-
-            changeDirectionDelay.Update(dt);
-
-            if (changeDirectionDelay.isTrigger) {
-                target = (Ldjam49.Direction)random.Next(0, 3);
-                changeDirectionDelay.Reset();
-            }
-
             bool canChangePosition = true;
+
+            if (ghostTexture.Name.Contains("red")) {
+                target = direction;
+                if (Ldjam49.kState.IsKeyDown(Keys.Left) || Ldjam49.kState.IsKeyDown(Keys.A)) target = Ldjam49.Direction.Left;
+                if (Ldjam49.kState.IsKeyDown(Keys.Right) || Ldjam49.kState.IsKeyDown(Keys.D)) target = Ldjam49.Direction.Right;
+                if (Ldjam49.kState.IsKeyDown(Keys.Up) || Ldjam49.kState.IsKeyDown(Keys.W)) target = Ldjam49.Direction.Up;
+                if (Ldjam49.kState.IsKeyDown(Keys.Down) || Ldjam49.kState.IsKeyDown(Keys.S)) target = Ldjam49.Direction.Down;
+            } else {
+                changeDirectionDelay.Update(dt);
+
+                if (changeDirectionDelay.isTrigger) {
+                    target = (Ldjam49.Direction)random.Next(0, 3);
+                    changeDirectionDelay.Reset();
+                }
+            }
 
             blockingTileX = -1; blockingTileY = -1;
             for (int y = 0; y < Ldjam49.tiles.Length; ++y) {
@@ -119,7 +126,7 @@ namespace ldjam49Namespace {
             body.Position += GhostMovement * dt;
             body.Awake = true;
 
-            float offset = 12;
+            float offset = 15;
             bool isGhostBlocked = false;
             for (int y = 0; y < Ldjam49.tiles.Length; ++y) {
                 for (int x = 0; x < Ldjam49.tiles[y].Length; ++x) {

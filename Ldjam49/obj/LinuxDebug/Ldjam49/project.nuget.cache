@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ej9scOBHnwLBYT/pDBnDqIoFgGFCkxgC+BhxexBr+1NH4lmD3MdDDIris2Qwk70aSIm0pQ15gBBNWNNn5jZZ3g==",
+  "dgSpecHash": "L1okpmmsE6t+YJYZAbgVOddcl5uTp1aot3t1vRGkfvrA4H3VtV8ND8Hex9FzOpU5pYnLuDoleIM+RKbmjDxFlA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\Ldjam49\\Ldjam49.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Leandro\\.nuget\\packages\\chaifoxes.fmodaudio.desktop\\2.0.0\\chaifoxes.fmodaudio.desktop.2.0.0.nupkg.sha512",
     "C:\\Users\\Leandro\\.nuget\\packages\\configureawaitchecker.analyzer\\5.0.0\\configureawaitchecker.analyzer.5.0.0.nupkg.sha512",
     "C:\\Users\\Leandro\\.nuget\\packages\\errorprone.net.coreanalyzers\\0.4.0-beta.1\\errorprone.net.coreanalyzers.0.4.0-beta.1.nupkg.sha512",
     "C:\\Users\\Leandro\\.nuget\\packages\\errorprone.net.structs\\0.4.0-beta.1\\errorprone.net.structs.0.4.0-beta.1.nupkg.sha512",

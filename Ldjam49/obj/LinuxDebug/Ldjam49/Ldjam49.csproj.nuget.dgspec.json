@@ -54,6 +54,10 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "ChaiFoxes.FMODAudio.Desktop": {
+              "target": "Package",
+              "version": "[2.0.0, )"
+            },
             "ConfigureAwaitChecker.Analyzer": {
               "suppressParent": "All",
               "target": "Package",

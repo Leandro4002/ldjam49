@@ -16,5 +16,16 @@
         "TextureFormat": "Color"
       }
     },
+	
+	"audio": {
+      "path": "audio/*.mp3",
+      "recursive": "True",
+      "action": "copy",
+      "importer": "Mp3Importer",
+      "processor": "SongProcessor",
+      "processorParam": {
+        "Quality": "Best"
+      }
+    },
   }
 }

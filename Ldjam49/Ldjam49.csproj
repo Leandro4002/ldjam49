@@ -24,11 +24,66 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="ChaiFoxes.FMODAudio.Desktop" Version="2.0.0" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\monogameutilities\MonoGameUtilities.csproj" />
     <ProjectReference Include="..\VelcroPhysics\VelcroPhysics.MonoGame.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="x86\" />
+    <Folder Include="x64\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="x64\fmod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="x64\fmodstudio.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x64\libfmod.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x64\libfmod.so.13">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x64\libfmod.so.13.3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x64\libfmodL.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x64\libfmodL.so.13">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x64\libfmodL.so.13.3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\fmod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\fmodstudio.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\libfmod.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\libfmod.so.13">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\libfmod.so.13.3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\libfmodL.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\libfmodL.so.13">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\libfmodL.so.13.3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
