@@ -32,3 +32,5 @@ C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\runtimes\u
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Genbox.MonoGameUtilities.dll
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Genbox.MonoGameUtilities.pdb
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\textures\pacman.xnb
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\textures\tile.xnb
