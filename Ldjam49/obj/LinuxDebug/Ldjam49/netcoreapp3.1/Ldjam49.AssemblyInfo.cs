@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright 2021, by Ian Qvist. All rights reserved.")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("High performance 2D collision detection system with realistic physics responses.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("0.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.0.0-alpha.0.7+34c4a74a116b9a54deaa9880d42b9182a413327e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.0.0-alpha.0.9+a308ea36ac150bebcaccdca091c156e96eaef5cc")]
 [assembly: System.Reflection.AssemblyProductAttribute("Genbox.Ldjam49")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Genbox.Ldjam49")]
 [assembly: System.Reflection.AssemblyVersionAttribute("0.0.0.0")]

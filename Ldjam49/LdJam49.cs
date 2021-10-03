@@ -6,6 +6,8 @@ using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Utilities;
 using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Collision.Filtering;
+using Genbox.VelcroPhysics.Collision.Handlers;
+using Genbox.VelcroPhysics.Collision.ContactSystem;
 using MonoGameUtilities;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +19,7 @@ namespace ldjam49Namespace {
         public readonly GraphicsDeviceManager graphicsDevice;
         public static SpriteBatch spriteBatch;
         public static RenderTarget2D gameRender, lightRender;
-        public static bool showFps, IsExiting, isPhysicsActivated;
+        public static bool showFps, IsExiting, isPhysicsActivated, isGameOver;
         public static float roomOfManeuver = 0.3f; // The bigger the more time the player has to change direction before it is not possible again
         public static float ballRadius = 5.5f;
         public const int TILE_SIZE = 50;
@@ -28,7 +30,7 @@ namespace ldjam49Namespace {
         public static Body[][] tilesBody;
         public static Texture2D DebugTileTexture, PlayerTexture, borderTexture, ballTexture;
         public static World world;
-        public static Dictionary<string, Texture2D> textures;
+        public static Dictionary<string, Texture2D> textures, animations;
         public static KeyboardState kState, oldKState;
         public static Matrix centerImageMatrix, halfTileMatrix;
         public static Vector2 centerDisplacement;
@@ -37,6 +39,8 @@ namespace ldjam49Namespace {
         public static Delay thunderDelay, thunderDuration;
         public static float thunderMinWaitTime = 20, thunderMaxWaitTime = 30, thunderPerturbation = 10;
         public static Dictionary<string, Sound> sounds;
+        public static Sound mainMusicSound, rainSound;
+        public static Channel mainMusicChannel, rainChannel;
 
         public enum Direction {
             Right, Down, Left, Up
@@ -61,15 +65,24 @@ namespace ldjam49Namespace {
             FMODManager.Init(FMODMode.CoreAndStudio, "Content/audio");
             sounds = LoadAudioInPath("Content/audio");
 
-            Sound sound = CoreSystem.LoadStreamedSound("rain.mp3");
-            sound.Volume = 0.1f;
-            Channel channel = sound.Play();
-            channel.Looping = true;
+            rainSound = CoreSystem.LoadStreamedSound("rain.mp3");
+            rainSound.Volume = 0.1f;
+            rainChannel = rainSound.Play();
+            rainChannel.Looping = true;
 
-            Sound sound2 = CoreSystem.LoadStreamedSound("Monkeys-Spinning-Monkeys.mp3");
-            sound2.Volume = 0.1f;
-            Channel channel2 = sound2.Play();
-            channel2.Looping = true;
+            mainMusicSound = CoreSystem.LoadStreamedSound("Monkeys-Spinning-Monkeys.mp3");
+            mainMusicSound.Volume = 0.1f;
+            mainMusicChannel = mainMusicSound.Play();
+            mainMusicChannel.Looping = true;
+
+            Sound sound = CoreSystem.LoadStreamedSound("pacman-start.mp3");
+            sound.Volume = 1f;
+            sound.Play();
+
+            Sound sound2 = CoreSystem.LoadStreamedSound("waka.mp3");
+            sound2.Volume = 0.3f;
+            Channel channel = sound2.Play();
+            channel.Looping = true;
 
             random = new Random();
 
@@ -93,7 +106,7 @@ namespace ldjam49Namespace {
                 new int[] {26, 6, 6, 2, 0, 10, 0, 10, 0, 1, 6, 6, 25}
             };
 
-            centerDisplacement = new Vector2(630, 240);
+            centerDisplacement = new Vector2(610, 240);
             centerImageMatrix = Matrix.CreateTranslation(new Vector3(centerDisplacement.X, centerDisplacement.Y, 0)) * Matrix.CreateScale(.8f);
             halfTileMatrix = Matrix.CreateTranslation(new Vector3(HALF_TILE.X, HALF_TILE.Y, 0));
 
@@ -124,20 +137,26 @@ namespace ldjam49Namespace {
                         tilesBody[y][x].BodyType = BodyType.Static;
                         tilesBody[y][x].Position = new Vector2(TILE_SIZE * x, TILE_SIZE * y);
                         tilesBody[y][x].CollisionCategories = Category.Cat4;
+                        tilesBody[y][x].CollidesWith = Category.Cat2;
                         tilesBody[y][x].Restitution = 0.7f;
+                        tilesBody[y][x].Friction = 0.3f;
                     }
                 }
             }
 
-            Player.Init();
-
             base.Initialize();
         }
+
+        public static int roomWidth => tiles[0].Length* TILE_SIZE;
+        public static int roomHeight => tiles.Length* TILE_SIZE;
 
         protected override void LoadContent() {
             base.LoadContent();
 
             textures = Content.LoadPath<Texture2D>("Content/textures");
+            animations = Content.LoadPath<Texture2D>("Content/animations");
+
+            Player.Init();
 
             ghosts = new Ghost[] {
                 new Ghost(Ghost.EnemyType.red, 3, 1) { speed = 25, direction = Direction.Right },
@@ -145,8 +164,8 @@ namespace ldjam49Namespace {
                 new Ghost(Ghost.EnemyType.pink, 1, 10) { speed = 15, direction = Direction.Right },
                 new Ghost(Ghost.EnemyType.orange, 11, 10) { direction = Direction.Left }, };
 
-            gameRender = new RenderTarget2D(GraphicsDevice, tiles[0].Length * TILE_SIZE, tiles.Length * TILE_SIZE);
-            lightRender = new RenderTarget2D(GraphicsDevice, tiles[0].Length * TILE_SIZE, tiles.Length * TILE_SIZE);
+            gameRender = new RenderTarget2D(GraphicsDevice, roomWidth, roomHeight);
+            lightRender = new RenderTarget2D(GraphicsDevice, roomWidth, roomHeight);
 
             DebugTileTexture = Tools.CreateRectTexture(GraphicsDevice, 50, 50, Color.Lime);
             ballTexture = Tools.CreateCircleTexture(GraphicsDevice, (int)ballRadius, Color.Yellow, 2);
@@ -160,23 +179,25 @@ namespace ldjam49Namespace {
         protected override void Update(GameTime gameTime) {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            thunderDelay.Update(dt);
-            thunderDuration.Update(dt);
+            if (!isGameOver) {
+                thunderDelay.Update(dt);
+                thunderDuration.Update(dt);
 
-            if (thunderDelay.isTrigger) {
-                thunderDelay.timer = (float)random.NextDouble() * (thunderMaxWaitTime - thunderMinWaitTime) + thunderMinWaitTime;
-                thunderDelay.Reset();
-                thunderDuration.Reset();
-                string audioFile = "thunder" + random.Next(1, 3);
-                sounds[audioFile].Volume = 0.5f;
-                sounds[audioFile].Play();
-                ActivatePhysics();
-                Debug.WriteLine("THUNDER");
+                if (thunderDelay.isTrigger) {
+                    thunderDelay.timer = (float)random.NextDouble() * (thunderMaxWaitTime - thunderMinWaitTime) + thunderMinWaitTime;
+                    thunderDelay.Reset();
+                    thunderDuration.Reset();
+                    string audioFile = "thunder" + random.Next(1, 3);
+                    sounds[audioFile].Volume = 0.5f;
+                    sounds[audioFile].Play();
+                    ActivatePhysics();
+                    Debug.WriteLine("THUNDER");
+                }
+
+                ambientOpacity = MathHelper.Clamp(ambientOpacity + (float)(random.NextDouble() - 0.5) * ambientOpacityVariation * (!thunderDuration.isTrigger ? thunderPerturbation : 1), 0, 1);
+
+                kState = Keyboard.GetState();
             }
-
-            ambientOpacity = MathHelper.Clamp(ambientOpacity + (float)(random.NextDouble() - 0.5) * ambientOpacityVariation * (!thunderDuration.isTrigger ? thunderPerturbation : 1), 0, 1);
-
-            kState = Keyboard.GetState();
 
             if (Ldjam49.kState.IsKeyDown(Keys.P)) {
                 ActivatePhysics();
@@ -187,6 +208,18 @@ namespace ldjam49Namespace {
             foreach (Ghost ghost in ghosts) {
                 ghost.Update(dt);
             }
+
+            for (int y = 0; y < tiles.Length; ++y) {
+                for (int x = 0; x < tiles[y].Length; ++x) {
+                    if (tilesBody[y][x] == null || tiles[y][x] != 0 || tilesBody[y][x].BodyType == BodyType.Kinematic) continue;
+
+                    if (tilesBody[y][x].Position.X < -HALF_TILE.X) tilesBody[y][x].Position = tilesBody[y][x].Position.ChangeX(roomWidth - HALF_TILE.X - ballRadius);
+                    if (tilesBody[y][x].Position.X > roomWidth - HALF_TILE.X) tilesBody[y][x].Position = tilesBody[y][x].Position.ChangeX(-HALF_TILE.X + ballRadius);
+                    if (tilesBody[y][x].Position.Y < -HALF_TILE.Y) tilesBody[y][x].Position = tilesBody[y][x].Position.ChangeY(roomHeight - HALF_TILE.Y - ballRadius);
+                    if (tilesBody[y][x].Position.Y > roomHeight - HALF_TILE.Y) tilesBody[y][x].Position = tilesBody[y][x].Position.ChangeY(-HALF_TILE.Y + ballRadius);
+                }
+            }
+
 
             oldKState = kState;
 
@@ -203,24 +236,29 @@ namespace ldjam49Namespace {
             Player.body.FixedRotation = false;
             Player.body.Awake = true;
             Player.body.CollidesWith = Category.All;
-            force = GetRandomVector(500);
+            force = GetRandomVector(5000);
             force.Y = -Math.Abs(force.Y);
             Player.body.ApplyLinearImpulse(force);
+            Player.body.ApplyAngularImpulse((float)random.NextDouble() * 100000 - 50000);
+            Player.dieAnim.isActive = true;
+            Player.dieAnim.timer = 1f / 10;
 
             for (int i = 0; i < ghosts.Length; ++i) {
                 ghosts[i].body.GravityScale = 1;
                 ghosts[i].body.FixedRotation = false;
                 ghosts[i].body.Awake = true;
                 ghosts[i].body.CollidesWith = Category.All;
-                force = GetRandomVector(500);
+                force = GetRandomVector(5000);
                 force.Y = -Math.Abs(force.Y);
                 ghosts[i].body.ApplyLinearImpulse(force);
+                ghosts[i].body.ApplyAngularImpulse((float)random.NextDouble() * 100000 - 50000);
+                ghosts[i].isActive = false;
             }
 
             for (int y = 0; y < tilesBody.Length; ++y) {
                 for (int x = 0; x < tilesBody[y].Length; ++x) {
                     if (tilesBody[y][x].FixedRotation == true) continue;
-                    tilesBody[y][x].BodyType = BodyType.Dynamic;
+                    tilesBody[y][x].BodyType = (tilesBody[y][x].BodyType == BodyType.Kinematic) ? BodyType.Kinematic : BodyType.Dynamic;
                     tilesBody[y][x].CollidesWith = Category.All;
                     force = GetRandomVector(500);
                     force.Y = -Math.Abs(force.Y);
@@ -237,7 +275,8 @@ namespace ldjam49Namespace {
             spriteBatch.Begin(transformMatrix: halfTileMatrix);
             for (int y = 0; y < tilesBody.Length; ++y) {
                 for (int x = 0; x < tilesBody[y].Length; ++x) {
-                    if (tilesBody[y][x].FixedRotation == false) {
+                    if (tilesBody[y][x] == null) continue;
+                    if (tiles[y][x] == 0 && tilesBody[y][x].FixedRotation == false) {
                         spriteBatch.Draw(ballTexture, tilesBody[y][x].Position, null, Color.White, 0, new Vector2(ballRadius), 1f, SpriteEffects.None, 0f);
                     } else {
                         spriteBatch.Draw(textures["tile_" + tiles[y][x]], new Vector2(x * TILE_SIZE, y * TILE_SIZE), null, Color.White, 0, HALF_TILE, 1f, SpriteEffects.None, 0f);
@@ -277,7 +316,7 @@ namespace ldjam49Namespace {
             }
             for (int y = 0; y < tilesBody.Length; ++y) {
                 for (int x = 0; x < tilesBody[y].Length; ++x) {
-                    if (tilesBody[y][x].FixedRotation == true) continue;
+                    if (tilesBody[y][x] == null || tilesBody[y][x].FixedRotation == true || tilesBody[y][x].BodyType == BodyType.Kinematic) continue;
                     spriteBatch.Draw(textures["ball_light"], tilesBody[y][x].Position + HALF_TILE, null, Color.White, 0, new Vector2(textures["ball_light"].Width) / 2, 1f, SpriteEffects.None, 0f);
                 }
             }

@@ -17,6 +17,7 @@ namespace ldjam49Namespace {
         public static Body body;
         public static int score; //TODO an "unstability" makes the imGui debug window appear
         public static int blockingTileX, blockingTileY;
+        public static AnimatedSprite runAnim, dieAnim;
         public static void Init() {
             direction = Ldjam49.Direction.Right;
             body = BodyFactory.CreateCircle(Ldjam49.world, radius, 1f);
@@ -26,26 +27,51 @@ namespace ldjam49Namespace {
             body.FixedRotation = true;
             body.Restitution = 0.6f;
 
+            runAnim = new AnimatedSprite(Ldjam49.animations["pacRun_f14w30h30c8r2"], 30).animParam(isLooping: true);
+            runAnim.origin = new Vector2(radius);
+            dieAnim = new AnimatedSprite(Ldjam49.animations["pacCollapse_f13w30h30c1r13"], 15).animParam(isActive: false);
+            dieAnim.origin = new Vector2(radius);
+
             body.CollisionCategories = Category.Cat2;
             body.CollidesWith = Category.Cat1;
         }
 
         public static void Update(float dt) {
-            for (int y = 0; y < Ldjam49.tilesBody.Length; ++y) {
-                for (int x = 0; x < Ldjam49.tilesBody[y].Length; ++x) {
-                    if (Ldjam49.tilesBody[y][x].FixedRotation == true) continue;
-                    if (Tools.Circle2Circle(x, y, radius*2, Ldjam49.tilesBody[y][x].Position.X, Ldjam49.tilesBody[y][x].Position.Y, Ldjam49.ballRadius)) {
-                        Ldjam49.tilesBody[y][x].RemoveFromWorld();
-                        Debug.WriteLine("SCORE: " + ++score);
+            runAnim.Update(dt);
+            dieAnim.Update(dt);
+
+            if (!Ldjam49.isGameOver) {
+                for (int y = 0; y < Ldjam49.tilesBody.Length; ++y) {
+                    for (int x = 0; x < Ldjam49.tilesBody[y].Length; ++x) {
+                        if (Ldjam49.tilesBody[y][x] == null || Ldjam49.tilesBody[y][x].FixedRotation == true) continue;
+                        if (Tools.Circle2Circle(body.Position.X, body.Position.Y, radius, Ldjam49.tilesBody[y][x].Position.X, Ldjam49.tilesBody[y][x].Position.Y, Ldjam49.ballRadius)) {
+                            Ldjam49.tilesBody[y][x].BodyType = BodyType.Kinematic;
+                            Ldjam49.tilesBody[y][x].Position = new Vector2(-9999);
+                            Ldjam49.tilesBody[y][x].GravityScale = 0;
+                            ++score;
+                            Ldjam49.sounds["powerup"].Play();
+                        }
                     }
+                }
+
+                foreach(Ghost ghost in Ldjam49.ghosts) {
+                    if (!ghost.isActive) break;
+                    if (Tools.Circle2Circle(body.Position.X, body.Position.Y, radius, ghost.body.Position.X, ghost.body.Position.Y, ghost.radius)) {
+                        GameOver();
+                    }
+                }
+
+                if (Ldjam49.isPhysicsActivated) {
+
+                } else {
+                    UpdateMovementForPacmanLike(dt);
                 }
             }
 
-            if (Ldjam49.isPhysicsActivated) {
-
-            } else {
-                UpdateMovementForPacmanLike(dt);
-            }
+            if (body.Position.X < -Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(Ldjam49.roomWidth - Ldjam49.HALF_TILE.X);
+            if (body.Position.X > Ldjam49.roomWidth - Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(-Ldjam49.HALF_TILE.X);
+            if (body.Position.Y < -Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y);
+            if (body.Position.Y > Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y) { body.Position = body.Position.ChangeY(-Ldjam49.HALF_TILE.Y); }
         }
 
         public static void UpdateMovementForPacmanLike(float dt) {
@@ -166,7 +192,17 @@ namespace ldjam49Namespace {
                 //spriteBatch.Draw(DebugTileTexture, new Vector2(blockingTileX, blockingTileY) - HALF_TILE, null, Color.White *.5f, Player.body.Rotation, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
-            Ldjam49.spriteBatch.Draw(Ldjam49.textures["pacman"], body.Position, null, Color.White, body.Rotation, new Vector2(radius), 1f, SpriteEffects.None, 0f);
+            if (Ldjam49.isGameOver) {
+                dieAnim.Draw(Ldjam49.spriteBatch, body.Position);
+            } else {
+                runAnim.rotation = body.Rotation;
+                runAnim.Draw(Ldjam49.spriteBatch, body.Position);
+            }
+        }
+
+        public static void GameOver() {
+            Ldjam49.isGameOver = true;
+            Ldjam49.mainMusicChannel.Stop();
         }
 
         public static void LoadContent() {

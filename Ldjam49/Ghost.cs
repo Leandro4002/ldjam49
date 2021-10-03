@@ -12,6 +12,7 @@ using System.Diagnostics;
 
 namespace ldjam49Namespace {
     public class Ghost {
+        public bool isActive;
         public float speed = 20, radius = 19;
         public Ldjam49.Direction direction, target;
         public Body body;
@@ -19,6 +20,7 @@ namespace ldjam49Namespace {
         public Texture2D ghostTexture;
         public Delay changeDirectionDelay;
         public Random random;
+        public AnimatedSprite goLeft, goRight, goDown, goUp;
         public Ghost (EnemyType enemyType, int xTile, int yTile) {
             body = BodyFactory.CreateCircle(Ldjam49.world, radius, 1f);
             body.Position = new Vector2(Ldjam49.TILE_SIZE * xTile, Ldjam49.TILE_SIZE * yTile);
@@ -29,7 +31,21 @@ namespace ldjam49Namespace {
             changeDirectionDelay = new Delay(5f);
             random = new Random();
 
-            //target = (Ldjam49.Direction)random.Next(0, 3);
+            goLeft = new AnimatedSprite(Ldjam49.animations["ghost-" + enemyType.ToString() + "-Left_f2w38h38c1r2"], 5).animParam(isLooping: true);
+            goRight = new AnimatedSprite(Ldjam49.animations["ghost-" + enemyType.ToString() + "-Right_f2w38h38c1r2"], 5).animParam(isLooping: true);
+            goUp = new AnimatedSprite(Ldjam49.animations["ghost-" + enemyType.ToString() + "-Up_f2w38h38c1r2"], 5).animParam(isLooping: true);
+            goDown = new AnimatedSprite(Ldjam49.animations["ghost-" + enemyType.ToString() + "-Down_f2w38h38c1r2"], 5).animParam(isLooping: true);
+            goDown.origin = new Vector2(radius);
+            goLeft.origin = new Vector2(radius);
+            goRight.origin = new Vector2(radius);
+            goUp.origin = new Vector2(radius);
+
+            goUp.currentFrame = random.Next(0, 1);
+            goLeft.currentFrame = random.Next(0, 1);
+            goRight.currentFrame = random.Next(0, 1);
+            goDown.currentFrame = random.Next(0, 1);
+
+            isActive = true;
 
             body.CollidesWith = Category.Cat1;
             body.CollisionCategories = Category.Cat3;
@@ -42,8 +58,20 @@ namespace ldjam49Namespace {
         }
 
         public void Update(float dt) {
+            if (Ldjam49.isGameOver) { return; }
+
+            if (body.Position.X < -Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(Ldjam49.roomWidth - Ldjam49.HALF_TILE.X);
+            if (body.Position.X > Ldjam49.roomWidth - Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(-Ldjam49.HALF_TILE.X);
+            if (body.Position.Y < -Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y);
+            if (body.Position.Y > Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(-Ldjam49.HALF_TILE.Y);
+
             if (Ldjam49.isPhysicsActivated) return;
             bool canChangePosition = true;
+
+            goLeft.Update(dt);
+            goRight.Update(dt);
+            goDown.Update(dt);
+            goUp.Update(dt);
 
             changeDirectionDelay.Update(dt);
 
@@ -160,7 +188,16 @@ namespace ldjam49Namespace {
                 //spriteBatch.Draw(DebugTileTexture, new Vector2(blockingTileX, blockingTileY) - HALF_TILE, null, Color.White *.5f, Ghost.body.Rotation, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
-            Ldjam49.spriteBatch.Draw(ghostTexture, body.Position, null, Color.White, body.Rotation, new Vector2(radius), 1f, SpriteEffects.None, 0f);
+            if (body.FixedRotation) {
+                switch (direction) {
+                    case Ldjam49.Direction.Down: goDown.Draw(Ldjam49.spriteBatch, body.Position); break;
+                    case Ldjam49.Direction.Left: goLeft.Draw(Ldjam49.spriteBatch, body.Position); break;
+                    case Ldjam49.Direction.Right: goRight.Draw(Ldjam49.spriteBatch, body.Position); break;
+                    case Ldjam49.Direction.Up: goUp.Draw(Ldjam49.spriteBatch, body.Position); break;
+                }
+            } else {
+                Ldjam49.spriteBatch.Draw(Ldjam49.textures["ghost_scared"], body.Position, null, Color.White, body.Rotation, new Vector2(radius), 1f, SpriteEffects.None, 0f);
+            }
         }
 
         public static void LoadContent() {
