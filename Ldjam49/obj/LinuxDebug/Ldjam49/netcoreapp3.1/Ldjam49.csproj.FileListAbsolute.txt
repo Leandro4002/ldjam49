@@ -99,3 +99,5 @@ C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\x86\libfmo
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\x86\libfmodL.so.13.3
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\x64\fmodstudio.dll
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\x86\fmodstudio.dll
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\audio\Monkeys-Spinning-Monkeys.mp3
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\textures\ball_light.xnb

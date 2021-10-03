@@ -15,6 +15,7 @@ namespace ldjam49Namespace {
         public static float speed = 50, radius = 15;
         public static Ldjam49.Direction direction, target;
         public static Body body;
+        public static int score; //TODO an "unstability" makes the imGui debug window appear
         public static int blockingTileX, blockingTileY;
         public static void Init() {
             direction = Ldjam49.Direction.Right;
@@ -23,12 +24,23 @@ namespace ldjam49Namespace {
             body.BodyType = BodyType.Dynamic;
             body.GravityScale = 0;
             body.FixedRotation = true;
+            body.Restitution = 0.6f;
 
             body.CollisionCategories = Category.Cat2;
             body.CollidesWith = Category.Cat1;
         }
 
         public static void Update(float dt) {
+            for (int y = 0; y < Ldjam49.tilesBody.Length; ++y) {
+                for (int x = 0; x < Ldjam49.tilesBody[y].Length; ++x) {
+                    if (Ldjam49.tilesBody[y][x].FixedRotation == true) continue;
+                    if (Tools.Circle2Circle(x, y, radius*2, Ldjam49.tilesBody[y][x].Position.X, Ldjam49.tilesBody[y][x].Position.Y, Ldjam49.ballRadius)) {
+                        Ldjam49.tilesBody[y][x].RemoveFromWorld();
+                        Debug.WriteLine("SCORE: " + ++score);
+                    }
+                }
+            }
+
             if (Ldjam49.isPhysicsActivated) {
 
             } else {
@@ -52,7 +64,6 @@ namespace ldjam49Namespace {
                     if (Ldjam49.tiles[y][x] == 0) continue;
                     float xPos = Ldjam49.TILE_SIZE * x;
                     float yPos = Ldjam49.TILE_SIZE * y;
-                    float someVal = 1.1f;
                     float roomOfManeuver = 0.3f;
                     switch (target) {
                         case Ldjam49.Direction.Up:
@@ -112,7 +123,6 @@ namespace ldjam49Namespace {
             }
 
             body.Position += playerMovement * dt;
-            body.Awake = true;
 
             float offset = 18;
             bool isPlayerBlocked = false;

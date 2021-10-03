@@ -576,3 +576,21 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /copy:audio/thunder3.mp3
+
+#begin audio/Monkeys-Spinning-Monkeys.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/copy:audio/Monkeys-Spinning-Monkeys.mp3
+
+#begin textures/ball_light.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:MakeSquare=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:textures/ball_light.png
