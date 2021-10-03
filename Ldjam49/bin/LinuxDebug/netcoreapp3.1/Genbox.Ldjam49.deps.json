@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "Genbox.Ldjam49/0.0.0-alpha.0.5": {
+      "Genbox.Ldjam49/0.0.0-alpha.0.11": {
         "dependencies": {
           "ChaiFoxes.FMODAudio.Desktop": "2.0.0",
           "ConfigureAwaitChecker.Analyzer": "5.0.0",
@@ -15,6 +15,7 @@
           "Genbox.MonoGameUtilities": "1.0.0",
           "Genbox.VelcroPhysics.MonoGame": "1.0.0",
           "IDisposableAnalyzers": "3.4.13",
+          "ImGui.NET": "1.78.0",
           "Microsoft.CodeAnalysis.NetAnalyzers": "5.0.3",
           "Microsoft.SourceLink.GitHub": "1.0.0",
           "MinVer": "2.5.0",
@@ -39,6 +40,41 @@
       "ErrorProne.NET.CoreAnalyzers/0.4.0-beta.1": {},
       "ErrorProne.NET.Structs/0.4.0-beta.1": {},
       "IDisposableAnalyzers/3.4.13": {},
+      "ImGui.NET/1.78.0": {
+        "dependencies": {
+          "System.Buffers": "4.4.0",
+          "System.Numerics.Vectors": "4.4.0",
+          "System.Runtime.CompilerServices.Unsafe": "4.4.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/ImGui.NET.dll": {
+            "assemblyVersion": "1.78.0.0",
+            "fileVersion": "1.78.0.0"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/libcimgui.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx-x64/native/libcimgui.dylib": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/cimgui.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x86/native/cimgui.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
       "Microsoft.Build.Tasks.Git/1.0.0": {},
       "Microsoft.CodeAnalysis.NetAnalyzers/5.0.3": {},
       "Microsoft.NETCore.Platforms/5.0.0": {},
@@ -121,6 +157,7 @@
         }
       },
       "Roslynator.Analyzers/3.2.0": {},
+      "System.Buffers/4.4.0": {},
       "System.Drawing.Common/5.0.2": {
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "5.0.0"
@@ -146,6 +183,8 @@
           }
         }
       },
+      "System.Numerics.Vectors/4.4.0": {},
+      "System.Runtime.CompilerServices.Unsafe/4.4.0": {},
       "ToStringWithoutOverrideAnalyzer/0.6.0": {},
       "Genbox.MonoGameUtilities/1.0.0": {
         "dependencies": {
@@ -166,7 +205,7 @@
     }
   },
   "libraries": {
-    "Genbox.Ldjam49/0.0.0-alpha.0.5": {
+    "Genbox.Ldjam49/0.0.0-alpha.0.11": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -205,6 +244,13 @@
       "sha512": "sha512-JsOSVDyCPMsiaPZLrdtNKmkSSfMvOsHq5JKPUOF2jg+zN8t/Vn1yLiO6BMZGD1NlhIQ5prS6D9LuLOu3FT6CpA==",
       "path": "idisposableanalyzers/3.4.13",
       "hashPath": "idisposableanalyzers.3.4.13.nupkg.sha512"
+    },
+    "ImGui.NET/1.78.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ArYtGX3VcVh7+K6DfO4p6lY2r+NMZ5TArfMD8TSYEmF/UcWIZC/yM1SC7L6bsjQ+9brdv2aXGTexz8z0ZvvTxw==",
+      "path": "imgui.net/1.78.0",
+      "hashPath": "imgui.net.1.78.0.nupkg.sha512"
     },
     "Microsoft.Build.Tasks.Git/1.0.0": {
       "type": "package",
@@ -276,12 +322,33 @@
       "path": "roslynator.analyzers/3.2.0",
       "hashPath": "roslynator.analyzers.3.2.0.nupkg.sha512"
     },
+    "System.Buffers/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AwarXzzoDwX6BgrhjoJsk6tUezZEozOT5Y9QKF94Gl4JK91I4PIIBkBco9068Y9/Dra8Dkbie99kXB8+1BaYKw==",
+      "path": "system.buffers/4.4.0",
+      "hashPath": "system.buffers.4.4.0.nupkg.sha512"
+    },
     "System.Drawing.Common/5.0.2": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-rvr/M1WPf24ljpvvrVd74+NdjRUJu1bBkspkZcnzSZnmAUQWSvanlQ0k/hVHk+cHufZbZfu7vOh/vYc0q5Uu/A==",
       "path": "system.drawing.common/5.0.2",
       "hashPath": "system.drawing.common.5.0.2.nupkg.sha512"
+    },
+    "System.Numerics.Vectors/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UiLzLW+Lw6HLed1Hcg+8jSRttrbuXv7DANVj0DkL9g6EnnzbL75EB7EWsw5uRbhxd/4YdG8li5XizGWepmG3PQ==",
+      "path": "system.numerics.vectors/4.4.0",
+      "hashPath": "system.numerics.vectors.4.4.0.nupkg.sha512"
+    },
+    "System.Runtime.CompilerServices.Unsafe/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9dLLuBxr5GNmOfl2jSMcsHuteEg32BEfUotmmUkmZjpR3RpVHE8YQwt0ow3p6prwA1ME8WqDVZqrr8z6H8G+Kw==",
+      "path": "system.runtime.compilerservices.unsafe/4.4.0",
+      "hashPath": "system.runtime.compilerservices.unsafe.4.4.0.nupkg.sha512"
     },
     "ToStringWithoutOverrideAnalyzer/0.6.0": {
       "type": "package",

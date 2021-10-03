@@ -126,3 +126,12 @@ C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\an
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\audio\pacman-start.mp3
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\audio\waka.mp3
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\audio\powerup.mp3
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\ImGui.NET.dll
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\runtimes\linux-x64\native\libcimgui.so
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\runtimes\osx-x64\native\libcimgui.dylib
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\runtimes\win-x64\native\cimgui.dll
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\runtimes\win-x86\native\cimgui.dll
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\fonts\Pixelmania.ttf
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\fonts\Pixel-Digivolve.ttf
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\audio\pacman-die.mp3
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\animations\pacCollapse_f17w30h30c1r17.xnb

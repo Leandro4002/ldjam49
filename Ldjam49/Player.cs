@@ -25,11 +25,13 @@ namespace ldjam49Namespace {
             body.BodyType = BodyType.Dynamic;
             body.GravityScale = 0;
             body.FixedRotation = true;
-            body.Restitution = 0.6f;
+            body.Restitution = 0.4f;
 
             runAnim = new AnimatedSprite(Ldjam49.animations["pacRun_f14w30h30c8r2"], 30).animParam(isLooping: true);
+            runAnim.currentFrame = 3;
+            runAnim.CalculateCurrentFramePosition();
             runAnim.origin = new Vector2(radius);
-            dieAnim = new AnimatedSprite(Ldjam49.animations["pacCollapse_f13w30h30c1r13"], 15).animParam(isActive: false);
+            dieAnim = new AnimatedSprite(Ldjam49.animations["pacCollapse_f17w30h30c1r17"], 6).animParam(isActive: false);
             dieAnim.origin = new Vector2(radius);
 
             body.CollisionCategories = Category.Cat2;
@@ -37,10 +39,13 @@ namespace ldjam49Namespace {
         }
 
         public static void Update(float dt) {
-            runAnim.Update(dt);
+            if (Ldjam49.gameStartsDelay.isTrigger) {
+                runAnim.Update(dt);
+            }
+
             dieAnim.Update(dt);
 
-            if (!Ldjam49.isGameOver) {
+            if (!Ldjam49.isGameOver && Ldjam49.gameStartsDelay.isTrigger) {
                 for (int y = 0; y < Ldjam49.tilesBody.Length; ++y) {
                     for (int x = 0; x < Ldjam49.tilesBody[y].Length; ++x) {
                         if (Ldjam49.tilesBody[y][x] == null || Ldjam49.tilesBody[y][x].FixedRotation == true) continue;
@@ -68,10 +73,10 @@ namespace ldjam49Namespace {
                 }
             }
 
-            if (body.Position.X < -Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(Ldjam49.roomWidth - Ldjam49.HALF_TILE.X);
-            if (body.Position.X > Ldjam49.roomWidth - Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(-Ldjam49.HALF_TILE.X);
-            if (body.Position.Y < -Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y);
-            if (body.Position.Y > Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y) { body.Position = body.Position.ChangeY(-Ldjam49.HALF_TILE.Y); }
+            if (body.Position.X < -Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(Ldjam49.roomWidth - Ldjam49.HALF_TILE.X - radius);
+            if (body.Position.X > Ldjam49.roomWidth - Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(-Ldjam49.HALF_TILE.X + radius);
+            if (body.Position.Y < -Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y - radius);
+            if (body.Position.Y > Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y) { body.Position = body.Position.ChangeY(-Ldjam49.HALF_TILE.Y + radius); }
         }
 
         public static void UpdateMovementForPacmanLike(float dt) {
@@ -203,6 +208,14 @@ namespace ldjam49Namespace {
         public static void GameOver() {
             Ldjam49.isGameOver = true;
             Ldjam49.mainMusicChannel.Stop();
+            Ldjam49.wakaChannel.Stop();
+            Ldjam49.sounds["pacman-die"].Volume = 1.5f;
+            Ldjam49.sounds["pacman-die"].Play();
+            dieAnim.isActive = true;
+        }
+
+        public static void Win() {
+            Ldjam49.isWinning = true;
         }
 
         public static void LoadContent() {

@@ -43,5 +43,11 @@
         "Quality": "Best"
       }
     },
+	
+	"font": {
+      "path": "fonts/*.ttf",
+      "recursive": "True",
+      "action": "copy"
+    },
   }
 }

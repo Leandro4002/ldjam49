@@ -27,8 +27,8 @@ namespace ldjam49Namespace {
             body.BodyType = BodyType.Dynamic;
             body.GravityScale = 0;
             body.FixedRotation = true;
-            body.Restitution = 0.6f;
-            changeDirectionDelay = new Delay(5f);
+            body.Restitution = 0.4f;
+            changeDirectionDelay = new Delay(5f, true);
             random = new Random();
 
             goLeft = new AnimatedSprite(Ldjam49.animations["ghost-" + enemyType.ToString() + "-Left_f2w38h38c1r2"], 5).animParam(isLooping: true);
@@ -58,12 +58,12 @@ namespace ldjam49Namespace {
         }
 
         public void Update(float dt) {
-            if (Ldjam49.isGameOver) { return; }
+            if (Ldjam49.isGameOver || !Ldjam49.gameStartsDelay.isTrigger) { return; }
 
-            if (body.Position.X < -Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(Ldjam49.roomWidth - Ldjam49.HALF_TILE.X);
-            if (body.Position.X > Ldjam49.roomWidth - Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(-Ldjam49.HALF_TILE.X);
-            if (body.Position.Y < -Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y);
-            if (body.Position.Y > Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(-Ldjam49.HALF_TILE.Y);
+            if (body.Position.X < -Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(Ldjam49.roomWidth - Ldjam49.HALF_TILE.X - radius);
+            if (body.Position.X > Ldjam49.roomWidth - Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(-Ldjam49.HALF_TILE.X + radius);
+            if (body.Position.Y < -Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y - radius);
+            if (body.Position.Y > Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(-Ldjam49.HALF_TILE.Y + radius);
 
             if (Ldjam49.isPhysicsActivated) return;
             bool canChangePosition = true;

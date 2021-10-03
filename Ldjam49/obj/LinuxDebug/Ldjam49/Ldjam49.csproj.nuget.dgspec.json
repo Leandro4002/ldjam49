@@ -78,6 +78,10 @@
               "target": "Package",
               "version": "[3.4.13, )"
             },
+            "ImGui.NET": {
+              "target": "Package",
+              "version": "[1.78.0, )"
+            },
             "Microsoft.CodeAnalysis.NetAnalyzers": {
               "suppressParent": "All",
               "target": "Package",

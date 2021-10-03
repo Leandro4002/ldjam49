@@ -1,17 +1,16 @@
-﻿using System;
+﻿using ChaiFoxes.FMODAudio;
+using Genbox.VelcroPhysics.Collision.Filtering;
+using Genbox.VelcroPhysics.Dynamics;
+using Genbox.VelcroPhysics.Factories;
+using Genbox.VelcroPhysics.Utilities;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Genbox.VelcroPhysics.Dynamics;
-using Genbox.VelcroPhysics.Utilities;
-using Genbox.VelcroPhysics.Factories;
-using Genbox.VelcroPhysics.Collision.Filtering;
-using Genbox.VelcroPhysics.Collision.Handlers;
-using Genbox.VelcroPhysics.Collision.ContactSystem;
 using MonoGameUtilities;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using ChaiFoxes.FMODAudio;
 using System.IO;
 
 namespace ldjam49Namespace {
@@ -19,7 +18,7 @@ namespace ldjam49Namespace {
         public readonly GraphicsDeviceManager graphicsDevice;
         public static SpriteBatch spriteBatch;
         public static RenderTarget2D gameRender, lightRender;
-        public static bool showFps, IsExiting, isPhysicsActivated, isGameOver;
+        public static bool showFps, IsExiting, isPhysicsActivated, isGameOver, isWinning = true;
         public static float roomOfManeuver = 0.3f; // The bigger the more time the player has to change direction before it is not possible again
         public static float ballRadius = 5.5f;
         public const int TILE_SIZE = 50;
@@ -27,6 +26,7 @@ namespace ldjam49Namespace {
         public static Random random;
         public static readonly Vector2 HALF_TILE = new Vector2(TILE_SIZE / 2, TILE_SIZE / 2);
         public static int[][] tiles;
+        public static int targetScore;
         public static Body[][] tilesBody;
         public static Texture2D DebugTileTexture, PlayerTexture, borderTexture, ballTexture;
         public static World world;
@@ -36,11 +36,17 @@ namespace ldjam49Namespace {
         public static Vector2 centerDisplacement;
         public static Ghost[] ghosts;
         public static BlendState multiplyBlendState;
-        public static Delay thunderDelay, thunderDuration;
+        public static Delay thunderDelay, thunderDuration, gameStartsDelay;
+        public static float gameStartsWaitTime = 6;
         public static float thunderMinWaitTime = 20, thunderMaxWaitTime = 30, thunderPerturbation = 10;
         public static Dictionary<string, Sound> sounds;
-        public static Sound mainMusicSound, rainSound;
-        public static Channel mainMusicChannel, rainChannel;
+        public static Sound mainMusicSound, rainSound, wakaSound;
+        public static Channel mainMusicChannel, rainChannel, wakaChannel;
+        public static ImGuiRenderer imGuiRenderer;
+        public static bool isDebugWindowOpen = true;
+        public static ImGuiIOPtr io;
+        public static ImGuiStylePtr style;
+        public static ImFontPtr scoreFont;
 
         public enum Direction {
             Right, Down, Left, Up
@@ -55,12 +61,24 @@ namespace ldjam49Namespace {
             IsMouseVisible = true;
         }
 
+        public static bool Contains(Array a, object val) {
+            return Array.IndexOf(a, val) != -1;
+        }
+
         protected override void Initialize() {
             graphicsDevice.PreferMultiSampling = true;
             graphicsDevice.PreferredBackBufferWidth = 1600;
             graphicsDevice.PreferredBackBufferHeight = 900;
             graphicsDevice.IsFullScreen = false;
             graphicsDevice.ApplyChanges();
+
+            imGuiRenderer = new ImGuiRenderer(this);
+            io = ImGui.GetIO();
+            scoreFont = io.Fonts.AddFontFromFileTTF("Content/fonts/Pixel-Digivolve.ttf", 20);
+            imGuiRenderer.RebuildFontAtlas();
+            style = ImGui.GetStyle();
+            style.WindowRounding = 0;
+            style.Colors[(int)ImGuiCol.TitleBg] = style.Colors[(int)ImGuiCol.TitleBgActive];
 
             FMODManager.Init(FMODMode.CoreAndStudio, "Content/audio");
             sounds = LoadAudioInPath("Content/audio");
@@ -71,23 +89,22 @@ namespace ldjam49Namespace {
             rainChannel.Looping = true;
 
             mainMusicSound = CoreSystem.LoadStreamedSound("Monkeys-Spinning-Monkeys.mp3");
-            mainMusicSound.Volume = 0.1f;
-            mainMusicChannel = mainMusicSound.Play();
-            mainMusicChannel.Looping = true;
+            mainMusicSound.Volume = 1f;
+            mainMusicSound.Looping = true;
 
             Sound sound = CoreSystem.LoadStreamedSound("pacman-start.mp3");
             sound.Volume = 1f;
             sound.Play();
 
-            Sound sound2 = CoreSystem.LoadStreamedSound("waka.mp3");
-            sound2.Volume = 0.3f;
-            Channel channel = sound2.Play();
-            channel.Looping = true;
+            wakaSound = CoreSystem.LoadStreamedSound("waka.mp3");
+            wakaSound.Volume = 0.2f;
+            wakaSound.Looping = true;
 
             random = new Random();
 
             thunderDelay = new Delay((float)random.NextDouble() * (thunderMaxWaitTime - thunderMinWaitTime) + thunderMinWaitTime);
             thunderDuration = new Delay(2, false);
+            gameStartsDelay = new Delay(gameStartsWaitTime);
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -127,7 +144,10 @@ namespace ldjam49Namespace {
                 tilesBody[y] = new Body[tiles[y].Length];
                 for (int x = 0; x < tiles[y].Length; ++x) {
                     if (tiles[y][x] != 0) {
-                        tilesBody[y][x] = BodyFactory.CreateRectangle(world, 40f, 40f, 1f);
+                        float width = 40, height = 40;
+                        if (Contains(new int[]{ 9, 16, 18}, tiles[y][x])) height -= 10;
+                        if (Contains(new int[] { 10, 17, 19 }, tiles[y][x])) width -= 10;
+                        tilesBody[y][x] = BodyFactory.CreateRectangle(world, width, height, 1f);
                         tilesBody[y][x].BodyType = BodyType.Static;
                         tilesBody[y][x].Position = new Vector2(TILE_SIZE * x, TILE_SIZE * y);
                         tilesBody[y][x].CollisionCategories = Category.Cat1;
@@ -140,6 +160,13 @@ namespace ldjam49Namespace {
                         tilesBody[y][x].CollidesWith = Category.Cat2;
                         tilesBody[y][x].Restitution = 0.7f;
                         tilesBody[y][x].Friction = 0.3f;
+                        ++targetScore;
+                    }
+                    if (y == 5 && x == 6) {
+                        Ldjam49.tilesBody[y][x].BodyType = BodyType.Kinematic;
+                        Ldjam49.tilesBody[y][x].Position = new Vector2(-9999);
+                        Ldjam49.tilesBody[y][x].GravityScale = 0;
+                        continue;
                     }
                 }
             }
@@ -159,10 +186,10 @@ namespace ldjam49Namespace {
             Player.Init();
 
             ghosts = new Ghost[] {
-                new Ghost(Ghost.EnemyType.red, 3, 1) { speed = 25, direction = Direction.Right },
-                new Ghost(Ghost.EnemyType.blue, 9, 1) { direction = Direction.Left },
-                new Ghost(Ghost.EnemyType.pink, 1, 10) { speed = 15, direction = Direction.Right },
-                new Ghost(Ghost.EnemyType.orange, 11, 10) { direction = Direction.Left }, };
+                new Ghost(Ghost.EnemyType.red, 3, 1) { speed = 25, target = Direction.Right, direction = Direction.Right },
+                new Ghost(Ghost.EnemyType.blue, 9, 1) { target = Direction.Left, direction = Direction.Left },
+                new Ghost(Ghost.EnemyType.pink, 1, 10) { speed = 15, target = Direction.Right, direction = Direction.Right },
+                new Ghost(Ghost.EnemyType.orange, 11, 10) { target = Direction.Left, direction = Direction.Left }, };
 
             gameRender = new RenderTarget2D(GraphicsDevice, roomWidth, roomHeight);
             lightRender = new RenderTarget2D(GraphicsDevice, roomWidth, roomHeight);
@@ -179,6 +206,13 @@ namespace ldjam49Namespace {
         protected override void Update(GameTime gameTime) {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            gameStartsDelay.Update(dt);
+            if (gameStartsDelay.isTrigger) {
+                if (!wakaChannel.IsPlaying) {
+                    wakaChannel = wakaSound.Play();
+                }
+            }
+
             if (!isGameOver) {
                 thunderDelay.Update(dt);
                 thunderDuration.Update(dt);
@@ -190,7 +224,11 @@ namespace ldjam49Namespace {
                     string audioFile = "thunder" + random.Next(1, 3);
                     sounds[audioFile].Volume = 0.5f;
                     sounds[audioFile].Play();
-                    ActivatePhysics();
+                    if (!isPhysicsActivated) {
+                        ActivatePhysics();
+                    } else {
+                        ShakeEverything();
+                    }
                     Debug.WriteLine("THUNDER");
                 }
 
@@ -199,9 +237,15 @@ namespace ldjam49Namespace {
                 kState = Keyboard.GetState();
             }
 
-            if (Ldjam49.kState.IsKeyDown(Keys.P)) {
+            if (kState.IsKeyDown(Keys.P)) {
                 ActivatePhysics();
             }
+
+            if (kState.IsKeyDown(Keys.R)) {
+                //Reset
+            }
+
+            if (kState.IsKeyDown(Keys.Escape)) Exit();
 
             Player.Update(dt);
 
@@ -220,7 +264,6 @@ namespace ldjam49Namespace {
                 }
             }
 
-
             oldKState = kState;
 
             // variable time step but never less then 30 Hz
@@ -229,42 +272,59 @@ namespace ldjam49Namespace {
             base.Update(gameTime);
         }
 
-        void ActivatePhysics() {
+        void ShakeEverything() {
+            if (!isPhysicsActivated) return;
+
             Vector2 force;
+            force = GetRandomVector(50000);
+            force.Y = -Math.Abs(force.Y);
+            Player.body.ApplyLinearImpulse(force);
+            Player.body.ApplyAngularImpulse((float)random.NextDouble() * 1000000 - 500000);
+
+            for (int i = 0; i < ghosts.Length; ++i) {
+                force = GetRandomVector(50000);
+                force.Y = -Math.Abs(force.Y);
+                ghosts[i].body.ApplyLinearImpulse(force);
+                ghosts[i].body.ApplyAngularImpulse((float)random.NextDouble() * 1000000 - 500000);
+            }
+
+            for (int y = 0; y < tilesBody.Length; ++y) {
+                for (int x = 0; x < tilesBody[y].Length; ++x) {
+                    if (tilesBody[y][x] == null || tilesBody[y][x].FixedRotation == true) continue;
+                    force = GetRandomVector(5000);
+                    force.Y = -Math.Abs(force.Y);
+                    tilesBody[y][x].ApplyLinearImpulse(force);
+                }
+            }
+        }
+
+        void ActivatePhysics() {
+            if (isPhysicsActivated) return;
             isPhysicsActivated = true;
+            mainMusicChannel = mainMusicSound.Play();
+
             Player.body.GravityScale = 1;
             Player.body.FixedRotation = false;
             Player.body.Awake = true;
             Player.body.CollidesWith = Category.All;
-            force = GetRandomVector(5000);
-            force.Y = -Math.Abs(force.Y);
-            Player.body.ApplyLinearImpulse(force);
-            Player.body.ApplyAngularImpulse((float)random.NextDouble() * 100000 - 50000);
-            Player.dieAnim.isActive = true;
-            Player.dieAnim.timer = 1f / 10;
 
             for (int i = 0; i < ghosts.Length; ++i) {
                 ghosts[i].body.GravityScale = 1;
                 ghosts[i].body.FixedRotation = false;
                 ghosts[i].body.Awake = true;
                 ghosts[i].body.CollidesWith = Category.All;
-                force = GetRandomVector(5000);
-                force.Y = -Math.Abs(force.Y);
-                ghosts[i].body.ApplyLinearImpulse(force);
-                ghosts[i].body.ApplyAngularImpulse((float)random.NextDouble() * 100000 - 50000);
                 ghosts[i].isActive = false;
             }
 
             for (int y = 0; y < tilesBody.Length; ++y) {
                 for (int x = 0; x < tilesBody[y].Length; ++x) {
-                    if (tilesBody[y][x].FixedRotation == true) continue;
+                    if (tilesBody[y][x] == null || tilesBody[y][x].FixedRotation == true) continue;
                     tilesBody[y][x].BodyType = (tilesBody[y][x].BodyType == BodyType.Kinematic) ? BodyType.Kinematic : BodyType.Dynamic;
                     tilesBody[y][x].CollidesWith = Category.All;
-                    force = GetRandomVector(500);
-                    force.Y = -Math.Abs(force.Y);
-                    tilesBody[y][x].ApplyLinearImpulse(force);
                 }
             }
+
+            ShakeEverything();
         }
         
         protected override void Draw(GameTime gameTime) {
@@ -330,6 +390,45 @@ namespace ldjam49Namespace {
             spriteBatch.Draw(textures["background-screen"], Vector2.Zero, Color.White);
             spriteBatch.Draw(textures["vignette"], Vector2.Zero, Color.Black * ambientOpacity);
             spriteBatch.End();
+
+            imGuiRenderer.BeforeLayout(gameTime);
+
+            if (isDebugWindowOpen) {
+                ImGui.SetNextWindowPos(new System.Numerics.Vector2(370, centerDisplacement.Y * .8f));
+                ImGui.SetNextWindowSize(new System.Numerics.Vector2(113, roomHeight * .8f));
+                ImGui.Begin("DEBUG", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
+
+                ImGui.Text("Red direction"); ImGui.Text(ghosts[0].direction.ToString().ToUpper());
+                ImGui.Text("Blue direction"); ImGui.Text(ghosts[1].direction.ToString().ToUpper());
+                ImGui.Text("Pink direction"); ImGui.Text(ghosts[2].direction.ToString().ToUpper());
+                ImGui.Text("Orange direction"); ImGui.Text(ghosts[3].direction.ToString().ToUpper());
+                ImGui.Text("Player direction: "); ImGui.Text(Player.direction.ToString().ToUpper());
+                ImGui.Separator();
+                ImGui.Text("isPhysicsActivated"); ImGui.Text(isPhysicsActivated.ToString().ToUpper());
+                ImGui.Text("ambientOpacity"); ImGui.Text(ambientOpacity.ToString());
+                ImGui.Text("FPS"); ImGui.Text(((int)io.Framerate).ToString());
+                
+                ImGui.End();
+            }
+
+            ImGui.PushFont(scoreFont);
+            ImGui.SetNextWindowPos(new System.Numerics.Vector2(1010, centerDisplacement.Y * .8f));
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(113, roomHeight * .8f));
+            ImGui.Begin("display", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoTitleBar);
+            
+            ImGui.SetWindowFontScale(1.5f);
+            ImGui.Text("SCORE");
+            ImGui.SetWindowFontScale(1);
+            ImGui.Text(string.Format("{0:000}", Player.score));
+            ImGui.Text("\n");
+            ImGui.SetWindowFontScale(1.5f);
+            ImGui.Text("TARGET");
+            ImGui.SetWindowFontScale(1);
+            ImGui.Text(string.Format("{0:000}", targetScore));
+
+            ImGui.End();
+
+            imGuiRenderer.AfterLayout();
 
             base.Draw(gameTime);
         }
