@@ -6,26 +6,48 @@ using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Utilities;
 using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Collision.Filtering;
+using Genbox.VelcroPhysics.Collision.ContactSystem;
+using Genbox.VelcroPhysics.Collision.Handlers;
 using MonoGameUtilities;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ldjam49Namespace {
     public static class Player {
-        public static float speed = 50, radius = 15;
+        public static float speed = 50, radius = 15, marioSpeed = 80000;
         public static Ldjam49.Direction direction, target;
         public static Body body;
         public static int score; //TODO an "unstability" makes the imGui debug window appear
         public static int blockingTileX, blockingTileY;
-        public static AnimatedSprite runAnim, dieAnim;
+        public static AnimatedSprite runAnim, dieAnim, marioRunAnim;
+        public static bool isMario, marioIsOnAir;
+        public static bool? marioIsFalling;
+        public static float lastYPos, fallingThreshold = 1f;
+        public static int marioIsRunning;
+        public static Vector2 marioFakeInertia;
+        public static float marioInertiaLoss = 500, jumpForce = 800, fakeMarioGravityForce = 1800;
+        public static int currentTileX, currentTileY;
+
         public static void Init() {
             direction = Ldjam49.Direction.Right;
+            score = 0;
+
             body = BodyFactory.CreateCircle(Ldjam49.world, radius, 1f);
             body.Position = new Vector2(Ldjam49.TILE_SIZE * 6, Ldjam49.TILE_SIZE * 5);
             body.BodyType = BodyType.Dynamic;
             body.GravityScale = 0;
             body.FixedRotation = true;
             body.Restitution = 0.4f;
+            body.CollisionCategories = Category.Cat2;
+            body.CollidesWith = Category.Cat1;
+            body.OnCollision = (Fixture a, Fixture b, Contact c) => {
+                if (b.Body.BodyType == BodyType.Static) {
+                    marioFakeInertia.Y = 0;
+                    if (b.Body.Position.Y > a.Body.Position.Y) {
+                        marioIsOnAir = false;
+                    }
+                }
+            };
 
             runAnim = new AnimatedSprite(Ldjam49.animations["pacRun_f14w30h30c8r2"], 30).animParam(isLooping: true);
             runAnim.currentFrame = 3;
@@ -34,49 +56,115 @@ namespace ldjam49Namespace {
             dieAnim = new AnimatedSprite(Ldjam49.animations["pacCollapse_f17w30h30c1r17"], 6).animParam(isActive: false);
             dieAnim.origin = new Vector2(radius);
 
-            body.CollisionCategories = Category.Cat2;
-            body.CollidesWith = Category.Cat1;
+            isMario = false;
+            marioRunAnim = new AnimatedSprite(Ldjam49.animations["mario-run_f3w27h27c3r1"], 10).animParam(isLooping: true);
+            marioRunAnim.origin = new Vector2(radius) + Vector2.UnitY * 2;
+            marioRunAnim.scale = new Vector2(1.5f);
         }
 
         public static void Update(float dt) {
+            currentTileX = (int)(body.Position.X + Ldjam49.HALF_TILE.Y) / Ldjam49.TILE_SIZE;
+            currentTileY = (int)(body.Position.Y + Ldjam49.HALF_TILE.Y) / Ldjam49.TILE_SIZE;
+
             if (Ldjam49.gameStartsDelay.isTrigger) {
                 runAnim.Update(dt);
             }
 
             dieAnim.Update(dt);
 
-            if (!Ldjam49.isGameOver && Ldjam49.gameStartsDelay.isTrigger) {
+            if (!Ldjam49.isWinning && !Ldjam49.isGameOver && Ldjam49.gameStartsDelay.isTrigger) {
                 for (int y = 0; y < Ldjam49.tilesBody.Length; ++y) {
                     for (int x = 0; x < Ldjam49.tilesBody[y].Length; ++x) {
-                        if (Ldjam49.tilesBody[y][x] == null || Ldjam49.tilesBody[y][x].FixedRotation == true) continue;
-                        if (Tools.Circle2Circle(body.Position.X, body.Position.Y, radius, Ldjam49.tilesBody[y][x].Position.X, Ldjam49.tilesBody[y][x].Position.Y, Ldjam49.ballRadius)) {
+                        if (Ldjam49.tilesBody[y][x] == null || Ldjam49.tilesBody[y][x].FixedRotation == true) { continue; }
+                        if (Tools.Circle2Circle(body.Position.X, body.Position.Y, (isMario ? radius * 1.2f : radius), Ldjam49.tilesBody[y][x].Position.X, Ldjam49.tilesBody[y][x].Position.Y, Ldjam49.ballRadius)) {
                             Ldjam49.tilesBody[y][x].BodyType = BodyType.Kinematic;
                             Ldjam49.tilesBody[y][x].Position = new Vector2(-9999);
                             Ldjam49.tilesBody[y][x].GravityScale = 0;
                             ++score;
-                            Ldjam49.sounds["powerup"].Play();
+                            Ldjam49.sounds[Ldjam49.getBallSoundEffect].Play();
+
+                            if (score >= Ldjam49.targetScore) {
+                                Win();
+                            }
                         }
                     }
                 }
 
-                foreach(Ghost ghost in Ldjam49.ghosts) {
-                    if (!ghost.isActive) break;
-                    if (Tools.Circle2Circle(body.Position.X, body.Position.Y, radius, ghost.body.Position.X, ghost.body.Position.Y, ghost.radius)) {
+                foreach (Ghost ghost in Ldjam49.ghosts) {
+                    if (ghost.isActive
+                        || (ghost.enemyType == Ghost.EnemyType.blue && Ghost.changeBlueEnemy)
+                        || (ghost.enemyType == Ghost.EnemyType.orange && Ghost.changeOrangeEnemy)) {
+                        if (Tools.Circle2Circle(body.Position.X, body.Position.Y, radius, ghost.body.Position.X, ghost.body.Position.Y, ghost.radius)) {
+                            GameOver();
+                        }
+                    }
+                }
+
+                foreach (Bullet bullet in Ldjam49.bullets) {
+                    if (Tools.Circle2Circle(body.Position.X, body.Position.Y, radius, bullet.position.X, bullet.position.Y, Bullet.radius)) {
                         GameOver();
                     }
                 }
 
                 if (Ldjam49.isPhysicsActivated) {
-
+                    if (isMario) {
+                        UpdateMovementForMarioLike(dt);
+                    }
                 } else {
                     UpdateMovementForPacmanLike(dt);
                 }
             }
 
-            if (body.Position.X < -Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(Ldjam49.roomWidth - Ldjam49.HALF_TILE.X - radius);
-            if (body.Position.X > Ldjam49.roomWidth - Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(-Ldjam49.HALF_TILE.X + radius);
-            if (body.Position.Y < -Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y - radius);
-            if (body.Position.Y > Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y) { body.Position = body.Position.ChangeY(-Ldjam49.HALF_TILE.Y + radius); }
+            if (!Ldjam49.isGameOver) {
+                if (body.Position.X < -Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(Ldjam49.roomWidth - Ldjam49.HALF_TILE.X - radius);
+                if (body.Position.X > Ldjam49.roomWidth - Ldjam49.HALF_TILE.X) body.Position = body.Position.ChangeX(-Ldjam49.HALF_TILE.X + radius);
+                if (body.Position.Y < -Ldjam49.HALF_TILE.Y) body.Position = body.Position.ChangeY(Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y - radius);
+                if (body.Position.Y > Ldjam49.roomHeight - Ldjam49.HALF_TILE.Y) { body.Position = body.Position.ChangeY(-Ldjam49.HALF_TILE.Y + radius); }
+            } else if (isMario) {
+                marioFakeInertia.Y += fakeMarioGravityForce/2 * dt;
+                body.Position += marioFakeInertia * dt;
+            }
+        }
+
+        public static void UpdateMovementForMarioLike(float dt) {
+            float playerMovement = 0;
+            if (Ldjam49.kState.IsKeyDown(Keys.Left) || Ldjam49.kState.IsKeyDown(Keys.A)) playerMovement -= speed;
+            if (Ldjam49.kState.IsKeyDown(Keys.Right) || Ldjam49.kState.IsKeyDown(Keys.D)) playerMovement += speed;
+            if (!marioIsOnAir && ((Ldjam49.kState.IsKeyDown(Keys.Space) && !Ldjam49.oldKState.IsKeyDown(Keys.Space))
+                || Ldjam49.kState.IsKeyDown(Keys.W) && !Ldjam49.oldKState.IsKeyDown(Keys.W))) { marioFakeInertia.Y -= jumpForce; }
+
+            body.ApplyLinearImpulse(new Vector2(playerMovement * marioSpeed * dt, 0));
+            if (playerMovement == 0) {
+                marioIsRunning = 0;
+                marioRunAnim.currentFrame = 0;
+                //marioRunAnim.timer = 0; //not sure about that
+                marioRunAnim.CalculateCurrentFramePosition();
+            } else {
+                if (playerMovement > 0) {marioIsRunning = 1; marioRunAnim.spriteEffects = SpriteEffects.FlipHorizontally; }
+                else { marioIsRunning = -1; marioRunAnim.spriteEffects = SpriteEffects.None; }
+                marioRunAnim.Update(dt);
+            }
+
+            if (marioIsOnAir) marioFakeInertia.Y += fakeMarioGravityForce * dt;
+            body.Position += marioFakeInertia * dt;
+            body.Awake = true;
+            marioFakeInertia.X = Tools.BringToZero(marioFakeInertia.X, marioInertiaLoss * dt);
+            marioFakeInertia.Y = Tools.BringToZero(marioFakeInertia.Y, marioInertiaLoss * dt);
+
+            float deltaY = body.Position.Y - lastYPos;
+            if (Math.Abs(deltaY) < fallingThreshold) {
+                marioIsFalling = null;
+            } else if (lastYPos > body.Position.Y) {
+                marioIsFalling = false;
+                marioIsOnAir = true;
+            } else {
+                marioIsFalling = true;
+                marioIsOnAir = true;
+            }
+
+            if (body.Position.Y == lastYPos) marioIsOnAir = false;
+
+            lastYPos = body.Position.Y;
         }
 
         public static void UpdateMovementForPacmanLike(float dt) {
@@ -142,7 +230,6 @@ namespace ldjam49Namespace {
                 }
                 direction = target;
                 body.Rotation = (float)((int)direction * Math.PI / 2);
-                Debug.WriteLine("DIRECTION CHANGED");
             }
 
             Vector2 playerMovement = Vector2.Zero;
@@ -192,16 +279,32 @@ namespace ldjam49Namespace {
             }
         }
 
-        public static void Draw() {
-            if (blockingTileX != -1 && blockingTileY != -1) {
-                //spriteBatch.Draw(DebugTileTexture, new Vector2(blockingTileX, blockingTileY) - HALF_TILE, null, Color.White *.5f, Player.body.Rotation, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            }
+        public static void TransformToMario() {
+            isMario = true;
+            body.FixedRotation = true;
+            body.Restitution = 0.1f;
+            body.GravityScale = 80;
+            body.Position = new Vector2(currentTileX * Ldjam49.TILE_SIZE, currentTileY * Ldjam49.TILE_SIZE);
+        }
 
-            if (Ldjam49.isGameOver) {
-                dieAnim.Draw(Ldjam49.spriteBatch, body.Position);
+        public static void Draw() {
+            if (isMario) {
+                if (Ldjam49.isGameOver) {
+                    Ldjam49.spriteBatch.Draw(Ldjam49.textures["mario-dead"], body.Position, null, Color.White, 0, new Vector2(radius), marioRunAnim.scale.X, marioRunAnim.spriteEffects, 0f);
+                } else {
+                    if (marioIsOnAir) {
+                        Ldjam49.spriteBatch.Draw(Ldjam49.textures["mario-jump"], body.Position, null, Color.White, 0, new Vector2(radius), marioRunAnim.scale.X, marioRunAnim.spriteEffects, 0f);
+                    } else {
+                        marioRunAnim.Draw(Ldjam49.spriteBatch, body.Position);
+                    }
+                }
             } else {
-                runAnim.rotation = body.Rotation;
-                runAnim.Draw(Ldjam49.spriteBatch, body.Position);
+                if (Ldjam49.isGameOver) {
+                    dieAnim.Draw(Ldjam49.spriteBatch, body.Position);
+                } else {
+                    runAnim.rotation = body.Rotation;
+                    runAnim.Draw(Ldjam49.spriteBatch, body.Position);
+                }
             }
         }
 
@@ -212,10 +315,20 @@ namespace ldjam49Namespace {
             Ldjam49.sounds["pacman-die"].Volume = 1.5f;
             Ldjam49.sounds["pacman-die"].Play();
             dieAnim.isActive = true;
+            Ldjam49.ambientOpacity = 1;
+            marioFakeInertia.Y = -jumpForce/2f;
+
+            if (isMario) {
+                body.CollidesWith = Category.None;
+            }
         }
 
         public static void Win() {
             Ldjam49.isWinning = true;
+            Ldjam49.mainMusicChannel.Stop();
+            Ldjam49.wakaChannel.Stop();
+            Ldjam49.sounds["FF7-victory"].Play();
+            Ldjam49.ambientOpacity = 0;
         }
 
         public static void LoadContent() {
