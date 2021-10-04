@@ -389,9 +389,9 @@ namespace ldjam49Namespace {
                 case EnemyType.blue:
                     if (changeBlueEnemy) {
                         if (Vector2.Distance(Player.body.Position, body.Position) < 100 || Ldjam49.isGameOver) {
-                            DrawWithTextureString("invader_blue_excited");
+                            DrawWithTextureString("invader_blue_excited", 1.2f);
                         } else {
-                            DrawWithTextureString("invader_blue_normal");
+                            DrawWithTextureString("invader_blue_normal", 1.2f);
                         }
                         return;
                     }

@@ -41,7 +41,7 @@ namespace ldjam49Namespace {
         public static float thunderWaitTime, thunderPerturbation = 10;
         public static Dictionary<string, Sound> sounds;
         public static Sound mainMusicSound, rainSound, wakaSound, startSound;
-        public static Channel mainMusicChannel, rainChannel, wakaChannel;
+        public static Channel mainMusicChannel, rainChannel, wakaChannel, glitchChannel;
         public static ImGuiRenderer imGuiRenderer;
         public static bool isDebugWindowOpen, showDebugModeLevel;
         public static ImGuiIOPtr io;
@@ -52,6 +52,14 @@ namespace ldjam49Namespace {
         public static int eventCount;
         public static List<Bullet> bullets;
         public static string getBallSoundEffect;
+        public static BinaryParticleSystem particleSys;
+        public static Delay transformDuration, transformEmitParticle;
+        public static float transformDurationTime = 5, transformEmitParticleTime = 0.3f;
+        public static TransformTarget transformTarget;
+
+        public enum TransformTarget {
+            None, Player, Blue, Pink, Orange, Red
+        }
 
         public enum Direction {
             Right, Down, Left, Up
@@ -92,68 +100,64 @@ namespace ldjam49Namespace {
                     Player.runAnim.CalculateCurrentFramePosition();
                     Player.runAnim.isActive = false;
                     wakaChannel.Stop();//TODO + currentframeX and currentFrameY
-                    thunderWaitTime = 5;
-                },
-                () => {
-                    ShakeEverything();                    
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
-
-                    Player.TransformToMario();
+                    thunderWaitTime = 10;
                 },
                 () => {
                     ShakeEverything();
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
+                    thunderWaitTime = 10;
 
-                    Ghost.TransformBlueEnemy();
+                    transformTarget = TransformTarget.Player;
+                    transformDuration.Reset();
+                    transformDuration.handler /= 2;
                 },
                 () => {
                     ShakeEverything();
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
+                    thunderWaitTime = 10;
 
-                    Ghost.TransformOrangeEnemy();
+                    transformTarget = TransformTarget.Blue;
+                    transformDuration.Reset();
                 },
                 () => {
                     ShakeEverything();
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
+                    thunderWaitTime = 10;
+
+                    transformTarget = TransformTarget.Orange;
+                    transformDuration.Reset();
+                },
+                () => {
+                    ShakeEverything();
+                    thunderWaitTime = 10;
 
                     SwitchToRingSound();
                 },
                 () => {
                     ShakeEverything();
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
+                    thunderWaitTime = 10;
 
-                    Ghost.TransformPinkEnemy();
+                    transformTarget = TransformTarget.Pink;
+                    transformDuration.Reset();
                 },
                 () => {
                     ShakeEverything();
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
+                    thunderWaitTime = 10;
 
                     SwitchToPokeball();
                 },
                 () => {
                     ShakeEverything();
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
+                    thunderWaitTime = 10;
 
                     showDebugModeLevel = true;
                 },
                 () => {
                     ShakeEverything();
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
+                    thunderWaitTime = 10;
 
                     Ghost.TransformRedEnemy();
                 },
                 () => {
                     ShakeEverything();
-                    PlayGlitchSound();
-                    thunderWaitTime = 5;
+                    thunderWaitTime = 10;
 
                     isDebugWindowOpen = true;
                 },
@@ -200,6 +204,11 @@ namespace ldjam49Namespace {
         }
 
         public static void InitGame() {
+            glitchChannel = sounds["glitch-long"].Play();
+            glitchChannel.Looping = true;
+            glitchChannel.Volume = 0;
+            transformDuration = new Delay(transformDurationTime, false);
+            transformEmitParticle = new Delay(transformEmitParticleTime, false);
             bullets = new List<Bullet>();
             getBallSoundEffect = "powerup";
             rainChannel = rainSound.Play();
@@ -238,7 +247,7 @@ namespace ldjam49Namespace {
                     if (tiles[y][x] != 0) {
                         float width = 40, height = 40;
                         if (Contains(new int[] { 9, 16, 18 }, tiles[y][x])) height -= 10;
-                        if (Contains(new int[] { 10, 17, 19 }, tiles[y][x])) width -= 10;
+                        if (Contains(new int[] { 10, 17, 19, 12 }, tiles[y][x])) width -= 10;
                         tilesBody[y][x] = BodyFactory.CreateRectangle(world, width, height, 1f);
                         tilesBody[y][x].BodyType = BodyType.Static;
                         tilesBody[y][x].Position = new Vector2(TILE_SIZE * x, TILE_SIZE * y);
@@ -274,6 +283,35 @@ namespace ldjam49Namespace {
             isPhysicsActivated = false;
         }
 
+        public static void UpdateTransformParticles(float dt) {
+            particleSys.Update(dt);
+            transformDuration.Update(dt);
+            transformEmitParticle.Update(dt);
+
+            Vector2 transformPos = Vector2.Zero;
+            switch (transformTarget) {
+                case TransformTarget.None: glitchChannel.Volume = 0; return;
+                case TransformTarget.Player: transformPos = Player.body.Position; break;
+                case TransformTarget.Red: transformPos = ghosts[0].body.Position; break;
+                case TransformTarget.Blue: transformPos = ghosts[1].body.Position; break;
+                case TransformTarget.Pink: transformPos = ghosts[2].body.Position; break;
+                case TransformTarget.Orange: transformPos = ghosts[3].body.Position; break;
+            }
+            particleSys.EmitParticles(transformPos);
+            glitchChannel.Volume = 0.5f;
+
+            if (transformDuration.isTrigger) {
+                switch (transformTarget) {
+                    case TransformTarget.None: return;
+                    case TransformTarget.Player: Player.TransformToMario(); transformTarget = TransformTarget.None; break;
+                    case TransformTarget.Red: Ghost.TransformRedEnemy(); transformTarget = TransformTarget.None; break;
+                    case TransformTarget.Blue: Ghost.TransformBlueEnemy(); transformTarget = TransformTarget.None; break;
+                    case TransformTarget.Pink: Ghost.TransformPinkEnemy(); transformTarget = TransformTarget.None; break;
+                    case TransformTarget.Orange: Ghost.TransformOrangeEnemy(); transformTarget = TransformTarget.None; break;
+                }
+            }
+        }
+
         public static int roomWidth => tiles[0].Length* TILE_SIZE;
         public static int roomHeight => tiles.Length* TILE_SIZE;
 
@@ -282,6 +320,8 @@ namespace ldjam49Namespace {
 
             textures = Content.LoadPath<Texture2D>("Content/textures");
             animations = Content.LoadPath<Texture2D>("Content/animations");
+
+            particleSys = new BinaryParticleSystem(spriteBatch, animations["binary_f2w22h26c2r1"], 0);
 
             Player.Init();
             Ghost.Init();
@@ -310,6 +350,7 @@ namespace ldjam49Namespace {
                 if (!gameStartsDelay.isTrigger) gameStartsDelay.handler = 0;
                 else thunderDelay.handler = 0;
             }
+            if (kState.IsKeyDown(Keys.Q)) particleSys.EmitParticles(Player.body.Position);
             if (kState.IsKeyDown(Keys.P)) ActivatePhysics();
             if (kState.IsKeyDown(Keys.D1)) Ghost.TransformBlueEnemy();
             if (kState.IsKeyDown(Keys.D2)) Ghost.TransformRedEnemy();
@@ -322,7 +363,8 @@ namespace ldjam49Namespace {
 
             gameStartsDelay.Update(dt);
             if (gameStartsDelay.isTrigger) {
-                if (!isWinning && !isGameOver && !wakaChannel.IsPlaying && !Player.isMario) {
+                if (!isWinning && !isGameOver && !wakaChannel.IsPlaying && !Player.isMario && !isPhysicsActivated) {
+                    Debug.WriteLine("PLAY WAKA");
                     wakaChannel = wakaSound.Play();
                 }
             }
@@ -389,6 +431,7 @@ namespace ldjam49Namespace {
             // variable time step but never less then 30 Hz
             if (!isWinning && !isGameOver) {
                 world.Step(Math.Min((float)gameTime.ElapsedGameTime.TotalSeconds, 1f / 30f));
+                UpdateTransformParticles(dt);
             }
 
             oldKState = kState;
@@ -492,6 +535,9 @@ namespace ldjam49Namespace {
             foreach (Bullet bullet in bullets) {
                 bullet.Draw();
             }
+
+            particleSys.Draw();
+
             spriteBatch.Draw(borderTexture, - new Vector2(TILE_SIZE / 2), Color.White);
             spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
@@ -618,12 +664,6 @@ namespace ldjam49Namespace {
 
             return content;
 
-        }
-
-        public static void PlayGlitchSound() {
-            string audioFile = "glitch" + random.Next(1, 5);
-            sounds[audioFile].Volume = 1f;
-            sounds[audioFile].Play();
         }
 
         public static Vector2 GetRandomVector(float force) {

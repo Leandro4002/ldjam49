@@ -314,6 +314,7 @@ namespace ldjam49Namespace {
             Ldjam49.wakaChannel.Stop();
             Ldjam49.sounds["pacman-die"].Volume = 1.5f;
             Ldjam49.sounds["pacman-die"].Play();
+            Ldjam49.glitchChannel.Volume = 0f;
             dieAnim.isActive = true;
             Ldjam49.ambientOpacity = 1;
             marioFakeInertia.Y = -jumpForce/2f;
@@ -327,6 +328,7 @@ namespace ldjam49Namespace {
             Ldjam49.isWinning = true;
             Ldjam49.mainMusicChannel.Stop();
             Ldjam49.wakaChannel.Stop();
+            Ldjam49.glitchChannel.Volume = 0f;
             Ldjam49.sounds["FF7-victory"].Play();
             Ldjam49.ambientOpacity = 0;
         }
