@@ -42,7 +42,10 @@ namespace ldjam49Namespace {
             body.CollidesWith = Category.Cat1;
             body.OnCollision = (Fixture a, Fixture b, Contact c) => {
                 if (b.Body.BodyType == BodyType.Static) {
-                    marioFakeInertia.Y = 0;
+                    if (Tools.Rect2Rect(body.Position.X - radius / 2, body.Position.Y - radius * 2.5f, radius * 2 / 2, radius * 4,
+                        b.Body.Position.X - Ldjam49.HALF_TILE.X, b.Body.Position.Y - Ldjam49.HALF_TILE.Y, Ldjam49.TILE_SIZE, Ldjam49.TILE_SIZE)) {
+                        marioFakeInertia.Y = 0;
+                    }
                     if (b.Body.Position.Y > a.Body.Position.Y) {
                         marioIsOnAir = false;
                     }
@@ -131,7 +134,7 @@ namespace ldjam49Namespace {
             if (Ldjam49.kState.IsKeyDown(Keys.Left) || Ldjam49.kState.IsKeyDown(Keys.A)) playerMovement -= speed;
             if (Ldjam49.kState.IsKeyDown(Keys.Right) || Ldjam49.kState.IsKeyDown(Keys.D)) playerMovement += speed;
             if (!marioIsOnAir && ((Ldjam49.kState.IsKeyDown(Keys.Space) && !Ldjam49.oldKState.IsKeyDown(Keys.Space))
-                || Ldjam49.kState.IsKeyDown(Keys.W) && !Ldjam49.oldKState.IsKeyDown(Keys.W))) { marioFakeInertia.Y -= jumpForce; }
+                || Ldjam49.kState.IsKeyDown(Keys.W) && !Ldjam49.oldKState.IsKeyDown(Keys.W))) { marioFakeInertia.Y -= jumpForce; Ldjam49.sounds["mario-jump"].Play(); }
 
             body.ApplyLinearImpulse(new Vector2(playerMovement * marioSpeed * dt, 0));
             if (playerMovement == 0) {

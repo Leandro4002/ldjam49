@@ -160,3 +160,5 @@ C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\au
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\animations\binary_f1w48h32c1r1.xnb
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\animations\binary_f2w22h26c2r1.xnb
 C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\audio\glitch-long.mp3
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\audio\AWP-shoot.mp3
+C:\Users\Leandro\Desktop\ldjam49\Ldjam49\bin\LinuxDebug\netcoreapp3.1\Content\audio\mario-jump.mp3
