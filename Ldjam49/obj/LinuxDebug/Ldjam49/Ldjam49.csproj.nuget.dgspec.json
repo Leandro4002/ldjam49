@@ -142,7 +142,7 @@
         "projectName": "Genbox.MonoGameUtilities",
         "projectPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\monogameutilities\\MonoGameUtilities.csproj",
         "packagesPath": "C:\\Users\\Leandro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\monogameutilities\\obj\\LinuxDebug\\MonoGameUtilities\\",
+        "outputPath": "C:\\Users\\Leandro\\Desktop\\ldjam49\\monogameutilities\\obj\\LinuxRelease\\MonoGameUtilities\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -221,6 +221,7 @@ namespace ldjam49Namespace {
                             Vector2 bulletPosition = body.Position + new Vector2((direction == Ldjam49.Direction.Right) ? radius + Bullet.radius : - radius - Bullet.radius, 0);
                             Vector2 bulletVelocity = new Vector2((direction == Ldjam49.Direction.Right) ? Bullet.speed: - Bullet.speed, 0);
                             Ldjam49.bullets.Add(new Bullet(bulletPosition, bulletVelocity));
+                            Ldjam49.sounds["AWP-shoot"].Play();
                             octorockCanShoot = false;
                         }
                     }
@@ -389,9 +390,9 @@ namespace ldjam49Namespace {
                 case EnemyType.blue:
                     if (changeBlueEnemy) {
                         if (Vector2.Distance(Player.body.Position, body.Position) < 100 || Ldjam49.isGameOver) {
-                            DrawWithTextureString("invader_blue_excited", 1.2f);
+                            DrawWithTextureString("invader_blue_excited", 1.3f);
                         } else {
-                            DrawWithTextureString("invader_blue_normal", 1.2f);
+                            DrawWithTextureString("invader_blue_normal", 1.3f);
                         }
                         return;
                     }

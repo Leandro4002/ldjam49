@@ -1047,3 +1047,15 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /copy:audio/glitch-long.mp3
+
+#begin audio/AWP-shoot.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/copy:audio/AWP-shoot.mp3
+
+#begin audio/mario-jump.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/copy:audio/mario-jump.mp3

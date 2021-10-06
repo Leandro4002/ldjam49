@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "Genbox.Ldjam49/0.0.0-alpha.0.11": {
+      "Genbox.Ldjam49/0.0.0-alpha.0.14": {
         "dependencies": {
           "ChaiFoxes.FMODAudio.Desktop": "2.0.0",
           "ConfigureAwaitChecker.Analyzer": "5.0.0",
@@ -205,7 +205,7 @@
     }
   },
   "libraries": {
-    "Genbox.Ldjam49/0.0.0-alpha.0.11": {
+    "Genbox.Ldjam49/0.0.0-alpha.0.14": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
